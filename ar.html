@@ -10,17 +10,21 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-    <!-- AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
+    <!-- AR Scene for a markerless experience -->
+    <a-scene
+        vr-mode-ui="enabled: false"
+        arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
 
-        <a-marker id="checkpoint-marker" preset="kanji">
+        <!-- The camera is the center of the world. We'll attach our compass to it. -->
+        <a-camera>
             <!--
-                The 3D model for the compass will be placed here.
-                We use a placeholder model for now.
-                The compass needle will be a separate entity so it can be rotated independently.
+                The 3D compass model is now a child of the camera.
+                This makes it stay at a fixed position in front of the user.
+                Position "0 0 -3" means 3 meters in front of the player.
             -->
             <a-entity
                 id="compass-model"
+                position="0 0 -3"
                 rotation="-90 0 0"
                 scale="0.1 0.1 0.1">
 
@@ -33,10 +37,7 @@
                     <a-box color="gray" width="0.1" depth="0.1" height="1" position="0 -0.5 0.1"></a-box>
                 </a-entity>
             </a-entity>
-        </a-marker>
-
-        <!-- Static camera for UI elements -->
-        <a-entity camera></a-entity>
+        </a-camera>
     </a-scene>
 
     <!-- 2D UI Overlay -->
@@ -44,7 +45,7 @@
         <a href="hud.html" class="button-secondary" id="back-to-hud-btn">Back to HUD</a>
 
         <div id="feedback-container">
-            <p id="instruction-text">Find the marker to start...</p>
+            <p id="instruction-text">Loading minigame...</p>
         </div>
 
         <div id="win-message" class="hidden">

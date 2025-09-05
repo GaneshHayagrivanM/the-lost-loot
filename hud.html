@@ -17,8 +17,22 @@
         </header>
 
         <main id="hud-screen">
-            <section id="clue-board">
-                <h2>Clue Board</h2>
+            <div id="location-permission-error" class="hidden">
+                <p>This game requires location access to function. Please enable it in your browser settings to continue.</p>
+            </div>
+
+            <div id="game-content">
+                <section id="proximity-map-container">
+                    <h2>Proximity Radar</h2>
+                    <div id="proximity-map">
+                        <div id="checkpoint-dot" title="Checkpoint Location"></div>
+                        <div id="player-dot" title="Your Location"></div>
+                    </div>
+                    <p id="distance-readout">Acquiring GPS signal...</p>
+                </section>
+
+                <section id="clue-board">
+                    <h2>Clue Board</h2>
                 <ul id="clues-list">
                     <!-- Clues will be populated by JS -->
                 </ul>
@@ -42,38 +56,98 @@
                 </div>
             </section>
 
-            <a href="ar.html" id="scan-marker-btn" class="button-primary">Scan Marker</a>
+            <a href="ar.html" id="scan-marker-btn" class="button-primary">Enter AR (Manual)</a>
         </main>
     </div>
 
     <script type="module">
         import { gameState } from './js/game-state.js';
+        import { geolocationService } from './js/geolocation-service.js';
+        import { CHECKPOINT_LOCATIONS } from './js/locations.js';
 
         const timerEl = document.getElementById('timer');
         const cluesListEl = document.getElementById('clues-list');
         const keySlots = document.querySelectorAll('.key-slot');
         const checkpointGridEl = document.getElementById('checkpoint-grid');
+        const distanceReadoutEl = document.getElementById('distance-readout');
+        const proximityMapEl = document.getElementById('proximity-map');
+        const playerDotEl = document.getElementById('player-dot');
+        const locationErrorEl = document.getElementById('location-permission-error');
+        const gameContentEl = document.getElementById('game-content');
+
+        const PROXIMITY_TRIGGER_METERS = 15;
         let timerInterval;
+        let locationWatchId = null;
 
         // --- Clue Data ---
-        // In a real app, this might come from the API
         const CLUE_DATA = {
-            1: "The game is afoot! Find the first marker to begin your journey.",
+            1: "A new journey begins! Use your radar to find the first checkpoint's location.",
             2: "Seek the place where knowledge flows like treasure - the scholar's sanctuary awaits.",
             3: "Where the iron horses sleep, your next challenge lies in wait.",
-            // ... more clues
         };
 
         function initializeHUD() {
             const state = gameState.get();
             if (!state) {
-                // If not logged in, redirect to the login page
                 window.location.href = 'index.html';
                 return;
             }
 
             updateHUD(state);
             startTimer(state.startTime);
+            startLocationTracking(state);
+        }
+
+        function startLocationTracking(state) {
+            const nextCheckpointId = state.unlockedCheckpoints.find(id => !state.completedCheckpoints.includes(id));
+            if (!nextCheckpointId) {
+                distanceReadoutEl.textContent = "All checkpoints cleared!";
+                return;
+            }
+            const target = CHECKPOINT_LOCATIONS[nextCheckpointId];
+
+            locationWatchId = geolocationService.startTracking(
+                (position) => handleLocationUpdate(position, target),
+                handleLocationError
+            );
+        }
+
+        function handleLocationUpdate(position, target) {
+            const { latitude, longitude } = position.coords;
+            const distance = geolocationService.getDistance(latitude, longitude, target.lat, target.lon);
+
+            distanceReadoutEl.textContent = `Distance: ${Math.round(distance)} meters`;
+            updateProximityMap(distance);
+
+            if (distance < PROXIMITY_TRIGGER_METERS) {
+                console.log("Proximity trigger! Entering AR...");
+                geolocationService.stopTracking(locationWatchId);
+                window.location.href = 'ar.html';
+            }
+        }
+
+        function handleLocationError(error) {
+            console.error("Geolocation error:", error.message);
+            gameContentEl.classList.add('hidden');
+            locationErrorEl.classList.remove('hidden');
+            distanceReadoutEl.textContent = "Location access denied.";
+        }
+
+        function updateProximityMap(distance) {
+            // Clamp the distance for visual representation, e.g., max visible distance is 200m
+            const maxDistance = 200;
+            const clampedDistance = Math.min(distance, maxDistance);
+            // Scale is 0 (far) to 1 (close)
+            const scale = 1 - (clampedDistance / maxDistance);
+
+            // Simple visualization: dot moves from edge to center
+            const mapSize = proximityMapEl.offsetWidth;
+            const position = (mapSize / 2) * (1 - scale);
+
+            playerDotEl.style.top = `${position}px`;
+            playerDotEl.style.left = `${position}px`;
+            playerDotEl.style.right = `${position}px`;
+            playerDotEl.style.bottom = `${position}px`;
         }
 
         function updateHUD(state) {
