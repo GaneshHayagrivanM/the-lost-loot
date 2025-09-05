@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Loot - HUD</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <header class="hud-header">
+            <h1>Your Progress</h1>
+            <div id="timer-container">
+                <span>Time:</span>
+                <span id="timer">00:00</span>
+            </div>
+        </header>
+
+        <main id="hud-screen">
+            <section id="clue-board">
+                <h2>Clue Board</h2>
+                <ul id="clues-list">
+                    <!-- Clues will be populated by JS -->
+                </ul>
+            </section>
+
+            <section id="inventory">
+                <div id="key-inventory">
+                    <h2>Golden Keys</h2>
+                    <div class="key-slots">
+                        <div id="key-slot-1" class="key-slot" data-key-id="1"></div>
+                        <div id="key-slot-2" class="key-slot" data-key-id="4"></div>
+                        <div id="key-slot-3" class="key-slot" data-key-id="7"></div>
+                    </div>
+                </div>
+
+                <div id="checkpoint-tracker">
+                    <h2>Checkpoints</h2>
+                    <div id="checkpoint-grid">
+                        <!-- 8 Checkpoint icons will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <a href="ar.html" id="scan-marker-btn" class="button-primary">Scan Marker</a>
+        </main>
+    </div>
+
+    <script type="module">
+        import { gameState } from './js/game-state.js';
+
+        const timerEl = document.getElementById('timer');
+        const cluesListEl = document.getElementById('clues-list');
+        const keySlots = document.querySelectorAll('.key-slot');
+        const checkpointGridEl = document.getElementById('checkpoint-grid');
+        let timerInterval;
+
+        // --- Clue Data ---
+        // In a real app, this might come from the API
+        const CLUE_DATA = {
+            1: "The game is afoot! Find the first marker to begin your journey.",
+            2: "Seek the place where knowledge flows like treasure - the scholar's sanctuary awaits.",
+            3: "Where the iron horses sleep, your next challenge lies in wait.",
+            // ... more clues
+        };
+
+        function initializeHUD() {
+            const state = gameState.get();
+            if (!state) {
+                // If not logged in, redirect to the login page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            updateHUD(state);
+            startTimer(state.startTime);
+        }
+
+        function updateHUD(state) {
+            // Update Clue Board
+            cluesListEl.innerHTML = ''; // Clear existing clues
+            state.unlockedCheckpoints.forEach(id => {
+                const clueText = CLUE_DATA[id] || `Clue for checkpoint ${id} is a mystery...`;
+                const li = document.createElement('li');
+                li.textContent = clueText;
+                cluesListEl.appendChild(li);
+            });
+
+            // Update Key Inventory
+            const collected = state.keysCollected;
+            keySlots.forEach(slot => {
+                const keyId = parseInt(slot.dataset.keyId, 10);
+                if (collected.includes(keyId)) {
+                    slot.classList.add('collected');
+                } else {
+                    slot.classList.remove('collected');
+                }
+            });
+
+            // Update Checkpoint Grid
+            checkpointGridEl.innerHTML = ''; // Clear existing grid
+            for (let i = 1; i <= 8; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('checkpoint-cell');
+                cell.textContent = i;
+                if (state.completedCheckpoints.includes(i)) {
+                    cell.classList.add('completed');
+                }
+                checkpointGridEl.appendChild(cell);
+            }
+        }
+
+        function startTimer(startTime) {
+            if (timerInterval) clearInterval(timerInterval);
+
+            const startTimestamp = new Date(startTime).getTime();
+
+            timerInterval = setInterval(() => {
+                const now = Date.now();
+                const elapsed = Math.floor((now - startTimestamp) / 1000);
+
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+
+                timerEl.textContent =
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Initial call to set up the HUD when the page loads
+        initializeHUD();
+    </script>
+</body>
+</html>

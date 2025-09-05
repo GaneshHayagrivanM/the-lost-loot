@@ -1,0 +1,4 @@
+AR.js Marker for Checkpoint 1:
+Type: Preset
+Name: kanji
+Image URL for testing: https://commons.wikimedia.org/wiki/File:Kanji_marker_ARjs.png
