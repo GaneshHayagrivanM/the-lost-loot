@@ -23,6 +23,7 @@ let currentRound = 0;
 let targetRounds = [];
 let targetAngle = 0;
 let holdTimer = null;
+let lastLogTime = 0; // For throttling console logs
 
 // --- Initialization ---
 function initialize() {
@@ -84,6 +85,13 @@ function handleDeviceOrientation(event) {
 
     const heading = event.webkitCompassHeading || event.alpha;
     if (heading === null) return;
+
+    // Log the heading once per second for debugging
+    const now = Date.now();
+    if (now - lastLogTime > 1000) {
+        console.log(`Current device heading: ${Math.round(heading)}°`);
+        lastLogTime = now;
+    }
 
     // Rotate the 3D needle object directly.
     // We assume the model's default "up" is the Y-axis.
