@@ -1,7 +1,7 @@
 import { gameState } from './js/game-state.js';
 
 // --- DOM Elements ---
-const compassNeedle = document.getElementById('compass-needle');
+const compassModel = document.getElementById('compass-gltf-model');
 const instructionText = document.getElementById('instruction-text');
 const winMessage = document.getElementById('win-message');
 const progressIndicator = document.getElementById('progress-indicator');
@@ -16,10 +16,11 @@ const DIRECTIONS = {
 };
 const TOLERANCE_DEGREES = 15;
 
-// --- Game State ---
+// --- Game & Model State ---
 let gameActive = false;
+let compassNeedle = null; // This will hold the THREE.js object for the needle
 let currentRound = 0;
-let targetRounds = []; // e.g., ['North', 'West', 'Southeast']
+let targetRounds = [];
 let targetAngle = 0;
 let holdTimer = null;
 
@@ -35,9 +36,26 @@ function initialize() {
         return;
     }
 
-    // Since this is markerless, we start the game immediately.
-    startGame();
+    // Wait for the model to be loaded before starting the game
+    compassModel.addEventListener('model-loaded', (e) => {
+        const model = e.detail.model; // This is a THREE.Group
+        // Traverse the model to find the needle
+        model.traverse((node) => {
+            if (node.isMesh && node.name === 'Needle') {
+                compassNeedle = node;
+                console.log('Compass needle object found!');
+            }
+        });
+
+        if (compassNeedle) {
+            startGame();
+        } else {
+            instructionText.textContent = 'Error: Could not find needle in 3D model.';
+            console.error('Could not find mesh with name "Needle" in the GLTF model.');
+        }
+    });
 }
+
 
 // --- Game Logic ---
 function startGame() {
@@ -46,7 +64,6 @@ function startGame() {
     targetRounds = selectRandomDirections(ROUNDS_TO_WIN);
     console.log('Starting game with targets:', targetRounds);
 
-    // Start listening to device orientation
     window.addEventListener('deviceorientation', handleDeviceOrientation);
 
     startNextRound();
@@ -63,31 +80,33 @@ function startNextRound() {
 }
 
 function handleDeviceOrientation(event) {
-    if (!gameActive) return;
+    if (!gameActive || !compassNeedle) return;
 
-    // Use webkitCompassHeading for iOS compatibility, otherwise use alpha
     const heading = event.webkitCompassHeading || event.alpha;
     if (heading === null) return;
 
-    // Rotate the 3D needle to match the device heading
-    compassNeedle.setAttribute('rotation', { x: 0, y: 0, z: heading });
+    // Rotate the 3D needle object directly.
+    // We assume the model's default "up" is the Y-axis.
+    // We convert degrees to radians and rotate around the Y axis.
+    // Note: The rotation is negative to align with compass conventions.
+    compassNeedle.rotation.y = -THREE.MathUtils.degToRad(heading);
 
     const difference = Math.abs(heading - targetAngle);
     const isCorrect = Math.min(difference, 360 - difference) <= TOLERANCE_DEGREES;
 
     if (isCorrect) {
-        if (holdTimer === null) { // Start the timer only once
+        if (holdTimer === null) {
             console.log('Correct direction held. Starting timer.');
             showFeedback(true);
             holdTimer = setTimeout(() => {
                 console.log('Success! Round complete.');
                 currentRound++;
-                showFeedback(false); // Reset feedback before next round
+                showFeedback(false);
                 startNextRound();
             }, HOLD_DURATION_MS);
         }
     } else {
-        if (holdTimer !== null) { // If player moves away, cancel the timer
+        if (holdTimer !== null) {
             console.log('Moved away. Resetting timer.');
             clearTimeout(holdTimer);
             holdTimer = null;
@@ -98,7 +117,7 @@ function handleDeviceOrientation(event) {
 
 async function winGame() {
     console.log('You win!');
-    gameActive = false; // Stop the game logic
+    gameActive = false;
     clearTimeout(holdTimer);
     window.removeEventListener('deviceorientation', handleDeviceOrientation);
 
@@ -106,7 +125,6 @@ async function winGame() {
 
     try {
         await gameState.finishCheckpoint(1);
-        // Redirect back to HUD after a delay
         setTimeout(() => {
             window.location.href = 'hud.html';
         }, 4000);
@@ -115,7 +133,6 @@ async function winGame() {
     }
 }
 
-// --- UI & Helpers ---
 function showFeedback(isShowing) {
     if (isShowing) {
         screenGlow.classList.remove('hidden');
@@ -135,4 +152,9 @@ function selectRandomDirections(count) {
 }
 
 // --- Start the script ---
-initialize();
+const scene = document.querySelector('a-scene');
+if (scene.hasLoaded) {
+    initialize();
+} else {
+    scene.addEventListener('loaded', initialize);
+}
