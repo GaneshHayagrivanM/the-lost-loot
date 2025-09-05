@@ -104,7 +104,7 @@ function handleDeviceOrientation(event) {
     // We assume the model's default "up" is the Y-axis.
     // We convert degrees to radians and rotate around the Y axis.
     // Note: The rotation is negative to align with compass conventions.
-    compassNeedle.rotation.y = -THREE.MathUtils.degToRad(heading);
+    compassNeedle.rotation.y = -AFRAME.THREE.MathUtils.degToRad(heading);
 
     const difference = Math.abs(heading - targetAngle);
     const isCorrect = Math.min(difference, 360 - difference) <= TOLERANCE_DEGREES;
