@@ -1,7 +1,6 @@
 import { gameState } from './js/game-state.js';
 
 // --- DOM Elements ---
-const marker = document.getElementById('checkpoint-marker');
 const compassNeedle = document.getElementById('compass-needle');
 const instructionText = document.getElementById('instruction-text');
 const winMessage = document.getElementById('win-message');
@@ -27,28 +26,17 @@ let holdTimer = null;
 // --- Initialization ---
 function initialize() {
     const state = gameState.get();
-    if (!state || state.completedCheckpoints.includes(1)) {
+    if (!state) {
+        instructionText.textContent = 'Game state not found. Please start from the HUD.';
+        return;
+    }
+    if (state.completedCheckpoints.includes(1)) {
         instructionText.textContent = 'You have already completed this checkpoint!';
-        // Disable marker detection if already completed
-        marker.remove();
         return;
     }
 
-    marker.addEventListener('markerFound', handleMarkerFound);
-    marker.addEventListener('markerLost', handleMarkerLost);
-}
-
-// --- Marker Handling ---
-function handleMarkerFound() {
-    console.log('Marker Found!');
-    if (!gameActive) {
-        startGame();
-    }
-}
-
-function handleMarkerLost() {
-    console.log('Marker Lost!');
-    resetGame('Marker lost. Get closer to restart the challenge.');
+    // Since this is markerless, we start the game immediately.
+    startGame();
 }
 
 // --- Game Logic ---
@@ -75,6 +63,8 @@ function startNextRound() {
 }
 
 function handleDeviceOrientation(event) {
+    if (!gameActive) return;
+
     // Use webkitCompassHeading for iOS compatibility, otherwise use alpha
     const heading = event.webkitCompassHeading || event.alpha;
     if (heading === null) return;
@@ -108,7 +98,9 @@ function handleDeviceOrientation(event) {
 
 async function winGame() {
     console.log('You win!');
-    resetGame('');
+    gameActive = false; // Stop the game logic
+    clearTimeout(holdTimer);
+    window.removeEventListener('deviceorientation', handleDeviceOrientation);
 
     winMessage.classList.remove('hidden');
 
@@ -121,15 +113,6 @@ async function winGame() {
     } catch (error) {
         instructionText.textContent = 'Error saving progress. Please try again.';
     }
-}
-
-function resetGame(message) {
-    gameActive = false;
-    clearTimeout(holdTimer);
-    holdTimer = null;
-    showFeedback(false);
-    window.removeEventListener('deviceorientation', handleDeviceOrientation);
-    instructionText.textContent = message || 'Find the marker to start...';
 }
 
 // --- UI & Helpers ---
