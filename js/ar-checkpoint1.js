@@ -27,6 +27,7 @@ let lastLogTime = 0; // For throttling console logs
 
 // --- Initialization ---
 function initialize() {
+    console.log("AR scene loaded. Initializing script...");
     const state = gameState.get();
     if (!state) {
         instructionText.textContent = 'Game state not found. Please start from the HUD.';
@@ -37,10 +38,11 @@ function initialize() {
         return;
     }
 
-    // Wait for the model to be loaded before starting the game
+    // Add event listeners for model loading
     compassModel.addEventListener('model-loaded', (e) => {
+        console.log("Compass model has successfully loaded.");
         const model = e.detail.model; // This is a THREE.Group
-        // Traverse the model to find the needle
+
         model.traverse((node) => {
             if (node.isMesh && node.name === 'Needle') {
                 compassNeedle = node;
@@ -51,9 +53,14 @@ function initialize() {
         if (compassNeedle) {
             startGame();
         } else {
-            instructionText.textContent = 'Error: Could not find needle in 3D model.';
+            instructionText.textContent = 'Error: Could not find "Needle" in 3D model.';
             console.error('Could not find mesh with name "Needle" in the GLTF model.');
         }
+    });
+
+    compassModel.addEventListener('model-error', (e) => {
+        instructionText.textContent = 'Error: The 3D compass model failed to load.';
+        console.error('Model loading failed:', e.detail);
     });
 }
 
