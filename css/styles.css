@@ -1,0 +1,243 @@
+/* --- Global Styles & Pirate Theme --- */
+
+/* Import a pirate-y font for headers and a readable one for body */
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --font-header: 'IM Fell English SC', serif;
+    --font-body: 'Roboto', sans-serif;
+    --color-background: #f5deb3; /* Parchment */
+    --color-container-bg: #d2b48c; /* Tan */
+    --color-text: #4a2c2a; /* Dark Brown */
+    --color-primary: #cd7f32; /* Bronze/Gold */
+    --color-primary-dark: #a96628;
+    --color-success: #2e8b57; /* Sea Green */
+    --color-glow: rgba(46, 139, 87, 0.5);
+    --border-main: 3px solid #8B4513; /* SaddleBrown */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--color-container-bg);
+    border: var(--border-main);
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: #5D4037;
+}
+
+/* --- Buttons --- */
+.button-primary, button {
+    font-family: var(--font-header);
+    font-size: 1.2rem;
+    background-color: var(--color-primary);
+    color: white;
+    border: 2px solid var(--color-primary-dark);
+    border-radius: 5px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.button-primary:hover, button:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+button:disabled {
+    background-color: #9E9E9E;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- Login Screen --- */
+#login-form input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 2px solid var(--color-primary-dark);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* --- HUD Screen --- */
+.hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--border-main);
+    padding-bottom: 1rem;
+}
+#timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+#clue-board, #inventory {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+#clues-list {
+    list-style: none;
+    padding-left: 0;
+}
+#clues-list li {
+    background: var(--color-background);
+    padding: 0.8rem;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+#inventory {
+    text-align: center;
+}
+
+#key-inventory, #checkpoint-tracker {
+    margin-top: 1.5rem;
+}
+
+.key-slots {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.key-slot {
+    width: 60px;
+    height: 80px;
+    background-color: rgba(0,0,0,0.2);
+    border: var(--border-main);
+    border-radius: 5px;
+    position: relative;
+}
+.key-slot.collected::after {
+    content: '🔑'; /* Simple emoji key */
+    font-size: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: gold;
+}
+
+#checkpoint-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+.checkpoint-cell {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: rgba(0,0,0,0.2);
+    border: 2px solid var(--color-primary-dark);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-family: var(--font-header);
+}
+.checkpoint-cell.completed {
+    background-color: var(--color-success);
+    color: white;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">☠️</text></svg>');
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#scan-marker-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+/* --- AR Screen UI --- */
+#ar-ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    pointer-events: none; /* Allow clicks to pass through to AR content if needed */
+}
+#ar-ui-overlay > * {
+    pointer-events: auto; /* Re-enable pointer events for UI elements */
+}
+
+#back-to-hud-btn {
+    align-self: flex-start;
+}
+#feedback-container {
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+#win-message {
+    background: var(--color-container-bg);
+    padding: 2rem;
+    border: var(--border-main);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* AR Feedback Animations */
+#screen-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 30px 20px var(--color-glow);
+    pointer-events: none;
+    z-index: 100;
+}
+#progress-indicator {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(var(--color-success) 0%, transparent 0%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+@keyframes progress {
+    from { background: conic-gradient(var(--color-success) 0%, transparent 0%); }
+    to { background: conic-gradient(var(--color-success) 100%, transparent 100%); }
+}

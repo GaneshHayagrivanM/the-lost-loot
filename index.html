@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Loot - Team Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <h1>Lost Loot</h1>
+            <h2>A Pirate's Treasure Hunt</h2>
+        </header>
+        <main id="login-screen">
+            <h3>Enter Your Team Name</h3>
+            <form id="login-form">
+                <input type="text" id="team-id-input" placeholder="e.g., The Sea Serpents" required>
+                <button type="submit" id="start-hunt-btn">Start Hunt</button>
+            </form>
+            <p id="error-message" class="hidden"></p>
+        </main>
+    </div>
+
+    <script type="module">
+        import { gameState } from './js/game-state.js';
+
+        const loginForm = document.getElementById('login-form');
+        const teamIdInput = document.getElementById('team-id-input');
+        const startButton = document.getElementById('start-hunt-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        // If already logged in, redirect to HUD
+        if (gameState.get()) {
+            window.location.href = 'hud.html';
+        }
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const teamId = teamIdInput.value.trim();
+
+            if (!teamId) {
+                showError('Team Name cannot be empty.');
+                return;
+            }
+
+            // Provide user feedback
+            startButton.disabled = true;
+            startButton.textContent = 'Starting...';
+            errorMessage.classList.add('hidden');
+
+            try {
+                await gameState.initializeGame(teamId);
+                // On success, redirect to the main HUD
+                window.location.href = 'hud.html';
+            } catch (error) {
+                showError('Could not start the game. Please try again.');
+                console.error(error);
+                // Reset button state on failure
+                startButton.disabled = false;
+                startButton.textContent = 'Start Hunt';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
