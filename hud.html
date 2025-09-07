@@ -78,6 +78,8 @@
         const PROXIMITY_TRIGGER_METERS = 300;
         let timerInterval;
         let locationWatchId = null;
+        let pollingInterval = null;
+        const POLLING_RATE_MS = 10000; // Poll every 10 seconds
 
         // --- Clue Data ---
         const CLUE_DATA = {
@@ -96,6 +98,20 @@
             updateHUD(state);
             startTimer(state.startTime);
             startLocationTracking(state);
+
+            // Start polling for state changes
+            if (pollingInterval) clearInterval(pollingInterval);
+            pollingInterval = setInterval(async () => {
+                console.log('Polling for game state updates...');
+                try {
+                    const latestState = await gameState.sync();
+                    if (latestState) {
+                        updateHUD(latestState);
+                    }
+                } catch (error) {
+                    console.error('Polling failed:', error);
+                }
+            }, POLLING_RATE_MS);
         }
 
         function startLocationTracking(state) {
@@ -150,6 +166,11 @@
             playerDotEl.style.bottom = `${position}px`;
         }
 
+        function convertKeysToIds(keysCount) {
+            const KEY_CHECKPOINTS = [1, 4, 7];
+            return KEY_CHECKPOINTS.slice(0, keysCount);
+        }
+
         function updateHUD(state) {
             // Update Clue Board
             cluesListEl.innerHTML = ''; // Clear existing clues
@@ -161,10 +182,10 @@
             });
 
             // Update Key Inventory
-            const collected = state.keysCollected;
+            const collectedKeyIds = convertKeysToIds(state.keysCollected);
             keySlots.forEach(slot => {
                 const keyId = parseInt(slot.dataset.keyId, 10);
-                if (collected.includes(keyId)) {
+                if (collectedKeyIds.includes(keyId)) {
                     slot.classList.add('collected');
                 } else {
                     slot.classList.remove('collected');
