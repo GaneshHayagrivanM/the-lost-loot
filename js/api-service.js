@@ -1,83 +1,78 @@
-// --- Mock Backend API Service ---
+// --- Live Backend API Service ---
 
-const USE_MOCK_BACKEND = true;
-const API_LATENCY = 500; // in milliseconds
-
-// This object acts as a simple in-memory "database" for the mock service.
-let mockDatabase = {};
+const BASE_URL = 'https://lost-loot-api-178393477736.asia-south1.run.app/api/v1';
 
 /**
- * Mocks the response for starting a new game.
- * @param {string} teamId - The ID of the team starting the game.
- * @returns {Promise<object>} A promise that resolves with the initial game state.
+ * A helper function to handle fetch responses.
+ * @param {Response} response - The response from a fetch call.
+ * @returns {Promise<object>} A promise that resolves with the JSON data.
  */
-function startGame(teamId) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (USE_MOCK_BACKEND) {
-                const now = new Date();
-                const initialState = {
-                    teamId: teamId,
-                    startTime: now.toISOString(),
-                    endTime: null,
-                    completedCheckpoints: [],
-                    unlockedCheckpoints: [1],
-                    keysCollected: [],
-                };
-                // Store the initial state in our mock database
-                mockDatabase[teamId] = initialState;
-                console.log('Mock API: startGame successful', initialState);
-                resolve(initialState);
-            } else {
-                // TODO: Implement real fetch call to POST /api/game/start
-                reject(new Error("Real API not implemented."));
-            }
-        }, API_LATENCY);
+async function handleResponse(response) {
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const error = new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
+    }
+    // Handle cases with no content, e.g., 204
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+        return response.json();
+    }
+    return {};
+}
+
+
+/**
+ * Initializes a new game session or retrieves an existing one.
+ * @param {string} teamId - The ID of the team starting the game.
+ * @returns {Promise<object>} A promise that resolves with the game state.
+ */
+async function startGame(teamId) {
+    const response = await fetch(`${BASE_URL}/game/start`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ teamId }),
     });
+    return handleResponse(response);
 }
 
 /**
- * Mocks the response for completing a checkpoint.
+ * Marks a checkpoint as completed.
  * @param {string} teamId - The ID of the team.
  * @param {number} checkpointId - The ID of the completed checkpoint.
  * @returns {Promise<object>} A promise that resolves with the updated game state.
  */
-function completeCheckpoint(teamId, checkpointId) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (USE_MOCK_BACKEND) {
-                const currentState = mockDatabase[teamId];
-                if (!currentState) {
-                    return reject(new Error("Game not started for this team."));
-                }
-
-                // Create a new state object to avoid mutation issues
-                let updatedState = { ...currentState };
-
-                if (checkpointId === 1) {
-                    updatedState = {
-                        ...updatedState,
-                        completedCheckpoints: [1],
-                        unlockedCheckpoints: [2, 3], // Unlocks next two checkpoints
-                        keysCollected: [1], // Award the first key
-                    };
-                }
-                // TODO: Add cases for other checkpoints as they are implemented
-
-                // Update the database
-                mockDatabase[teamId] = updatedState;
-                console.log('Mock API: completeCheckpoint successful', updatedState);
-                resolve(updatedState);
-            } else {
-                // TODO: Implement real fetch call to POST /api/checkpoint/complete
-                reject(new Error("Real API not implemented."));
-            }
-        }, API_LATENCY);
+async function completeCheckpoint(teamId, checkpointId) {
+    const response = await fetch(`${BASE_URL}/checkpoint/complete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ teamId, checkpointId }),
     });
+    return handleResponse(response);
 }
+
+/**
+ * Retrieves the current game state for a team.
+ * @param {string} teamId - The ID of the team.
+ * @returns {Promise<object>} A promise that resolves with the current game state.
+ */
+async function getTeamStatus(teamId) {
+    const response = await fetch(`${BASE_URL}/team/status/${teamId}`, {
+        method: 'GET',
+    });
+    return handleResponse(response);
+}
+
 
 // Export the functions to be used by other modules
 export const apiService = {
     startGame,
     completeCheckpoint,
+    getTeamStatus,
 };

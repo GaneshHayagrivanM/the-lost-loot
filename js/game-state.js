@@ -66,10 +66,31 @@ async function finishCheckpoint(checkpointId) {
     }
 }
 
+/**
+ * Fetches the latest game state from the server and updates sessionStorage.
+ * @returns {Promise<object>} A promise that resolves with the latest game state.
+ */
+async function syncGameState() {
+    const teamId = getCurrentTeamId();
+    if (!teamId) {
+        // Don't throw an error here, just return null if no game is active.
+        return null;
+    }
+    try {
+        const latestState = await apiService.getTeamStatus(teamId);
+        saveGameState(latestState);
+        return latestState;
+    } catch (error) {
+        console.error("Failed to sync game state:", error);
+        throw error;
+    }
+}
+
 export const gameState = {
     get: getGameState,
     save: saveGameState,
     getCurrentTeamId,
     initializeGame,
     finishCheckpoint,
+    sync: syncGameState,
 };
