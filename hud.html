@@ -128,7 +128,7 @@
             );
         }
 
-        function handleLocationUpdate(position, target) {
+        function handleLocationUpdate(position, target, checkpointId) {
             const { latitude, longitude } = position.coords;
             const distance = geolocationService.getDistance(latitude, longitude, target.lat, target.lon);
 
@@ -136,9 +136,9 @@
             updateProximityMap(distance);
 
             if (distance < PROXIMITY_TRIGGER_METERS) {
-                console.log("Proximity trigger! Entering AR...");
+                console.log(`Proximity trigger for checkpoint ${checkpointId}! Entering AR...`);
                 geolocationService.stopTracking(locationWatchId);
-                window.location.href = 'ar.html';
+                window.location.href = `ar.html?checkpointId=${checkpointId}`;
             }
         }
 
