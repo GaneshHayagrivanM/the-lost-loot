@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost Loot - AR Checkpoint</title>
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Dynamic Loader Script -->
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const checkpointId = params.get('checkpointId');
+
+        if (checkpointId) {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = `js/ar-checkpoint${checkpointId}.js`;
+            document.head.appendChild(script);
+        } else {
+            // Fallback or error handling
+            alert("No checkpoint ID specified! Returning to HUD.");
+            window.location.href = 'hud.html';
+        }
+    </script>
+
     <!-- A-Frame and AR.js Libraries -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -51,7 +69,6 @@
         <div id="screen-glow" class="hidden"></div>
     </div>
 
-    <!-- The game logic script -->
-    <script type="module" src="js/ar-checkpoint1.js"></script>
+    <!-- The old static script is removed. The dynamic loader will add the correct one. -->
 </body>
 </html>
