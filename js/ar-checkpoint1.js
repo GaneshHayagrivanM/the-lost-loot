@@ -34,8 +34,8 @@ function initialize() {
     const compassModel = document.createElement('a-gltf-model');
     compassModel.setAttribute('id', 'compass-gltf-model');
     compassModel.setAttribute('src', 'assets/compass.glb');
-    compassModel.setAttribute('position', '0 -1 -3');
-    compassModel.setAttribute('scale', '1 1 1');
+    compassModel.setAttribute('position', '0 -1 -4');
+    compassModel.setAttribute('scale', '0.4 0.4 0.4');
 
     compassModel.addEventListener('model-loaded', (e) => {
         console.log("Compass model has successfully loaded.");
