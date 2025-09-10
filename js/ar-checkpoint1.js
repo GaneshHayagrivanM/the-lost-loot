@@ -1,24 +1,17 @@
-// This is the fully restored and fixed version of the file.
-
-import { gameState } from './game-state.js'; // CORRECTED PATH
+import { gameState } from './game-state.js';
 
 // --- DOM Elements ---
-const compassModel = document.getElementById('compass-gltf-model');
 const instructionText = document.getElementById('instruction-text');
 const winMessage = document.getElementById('win-message');
 const progressIndicator = document.getElementById('progress-indicator');
 const screenGlow = document.getElementById('screen-glow');
 
-// --- Game Constants ---
+// --- Game Constants & State ---
 const ROUNDS_TO_WIN = 3;
 const HOLD_DURATION_MS = 3000;
-const DIRECTIONS = {
-    'North': 0, 'East': 90, 'South': 180, 'West': 270,
-    'Northeast': 45, 'Southeast': 135, 'Southwest': 225, 'Northwest': 315
-};
+const DIRECTIONS = { 'North': 0, 'East': 90, 'South': 180, 'West': 270, 'Northeast': 45, 'Southeast': 135, 'Southwest': 225, 'Northwest': 315 };
 const TOLERANCE_DEGREES = 15;
 
-// --- Game & Model State ---
 let gameActive = false;
 let compassNeedle = null;
 let currentRound = 0;
@@ -29,16 +22,20 @@ let lastLogTime = 0;
 
 // --- Initialization ---
 function initialize() {
-    console.log("AR scene loaded. Initializing script...");
+    console.log("AR scene loaded. Initializing Checkpoint 1: The Captain's Compass...");
     const state = gameState.get();
-    if (!state) {
-        instructionText.textContent = 'Game state not found. Please start from the HUD.';
-        return;
-    }
-    if (state.completedCheckpoints.includes(1)) {
+    if (!state || state.completedCheckpoints.includes(1)) {
         instructionText.textContent = 'You have already completed this checkpoint!';
         return;
     }
+
+    // Create and add the compass model to the scene dynamically
+    const camera = document.querySelector('a-camera');
+    const compassModel = document.createElement('a-gltf-model');
+    compassModel.setAttribute('id', 'compass-gltf-model');
+    compassModel.setAttribute('src', 'assets/compass.glb');
+    compassModel.setAttribute('position', '0 -1 -3');
+    compassModel.setAttribute('scale', '1 1 1');
 
     compassModel.addEventListener('model-loaded', (e) => {
         console.log("Compass model has successfully loaded.");
@@ -62,6 +59,8 @@ function initialize() {
         instructionText.textContent = 'Error: The 3D compass model failed to load.';
         console.error('Model loading failed:', e.detail);
     });
+
+    camera.appendChild(compassModel);
 }
 
 function startGame() {
@@ -69,7 +68,6 @@ function startGame() {
     currentRound = 0;
     targetRounds = selectRandomDirections(ROUNDS_TO_WIN);
     console.log('Starting game with targets:', targetRounds);
-
     window.addEventListener('deviceorientation', handleDeviceOrientation);
     startNextRound();
 }
@@ -102,10 +100,8 @@ function handleDeviceOrientation(event) {
 
     if (isCorrect) {
         if (holdTimer === null) {
-            console.log('Correct direction held. Starting timer.');
             showFeedback(true);
             holdTimer = setTimeout(() => {
-                console.log('Success! Round complete.');
                 currentRound++;
                 showFeedback(false);
                 startNextRound();
@@ -113,7 +109,6 @@ function handleDeviceOrientation(event) {
         }
     } else {
         if (holdTimer !== null) {
-            console.log('Moved away. Resetting timer.');
             clearTimeout(holdTimer);
             holdTimer = null;
             showFeedback(false);

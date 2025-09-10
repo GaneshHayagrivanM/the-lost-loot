@@ -75,7 +75,7 @@
         const locationErrorEl = document.getElementById('location-permission-error');
         const gameContentEl = document.getElementById('game-content');
 
-        const PROXIMITY_TRIGGER_METERS = 300;
+        const PROXIMITY_TRIGGER_METERS = 15;
         let timerInterval;
         let locationWatchId = null;
         let pollingInterval = null;
@@ -116,6 +116,9 @@
 
         function startLocationTracking(state) {
             const nextCheckpointId = state.unlockedCheckpoints.find(id => !state.completedCheckpoints.includes(id));
+
+            console.log("Next checkpoint to track:", nextCheckpointId); // DEBUGGING LINE
+
             if (!nextCheckpointId) {
                 distanceReadoutEl.textContent = "All checkpoints cleared!";
                 return;

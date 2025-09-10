@@ -34,20 +34,8 @@
         arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
 
         <!-- The camera is the center of the world. We'll attach our compass to it. -->
-        <a-camera>
-            <!--
-                The 3D compass model is now a child of the camera.
-                This makes it stay at a fixed position in front of the user.
-                Position "0 0 -3" means 3 meters in front of the player.
-            -->
-            <!-- Load the new GLTF model -->
-            <a-gltf-model
-                id="compass-gltf-model"
-                src="assets/compass.glb"
-                position="0 -1 -4"
-                rotation="0 0 0"
-                scale="0.5 0.5 0.5">
-            </a-gltf-model>
+        <a-camera cursor="rayOrigin: mouse;">
+            <!-- This camera is now empty. Checkpoint-specific scripts will add their own models to it. -->
         </a-camera>
     </a-scene>
 
