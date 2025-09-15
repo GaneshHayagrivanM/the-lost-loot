@@ -79,6 +79,7 @@ function createQuizScene() {
 function startGame() {
     gameActive = true;
     currentQuestionIndex = 0;
+    window.addEventListener('beforeunload', cleanup); // Add cleanup listener
     displayQuestion();
 }
 
@@ -125,10 +126,20 @@ function handleAnswerClick(selectedIndex) {
     }
 }
 
+function cleanup() {
+    console.log("Cleaning up Checkpoint 2 assets and listeners...");
+    gameActive = false;
+    window.removeEventListener('beforeunload', cleanup);
+
+    if (quizContainer && quizContainer.parentNode) {
+        quizContainer.parentNode.removeChild(quizContainer);
+        console.log("Quiz container removed from scene.");
+    }
+}
+
 async function winGame() {
     console.log('You win the quiz!');
-    gameActive = false;
-    quizContainer.setAttribute('visible', 'false'); // Hide the quiz
+    cleanup(); // Perform cleanup
 
     winMessage.classList.remove('hidden');
     winMessage.innerHTML = '<h2>Success!</h2><p>The Kraken is impressed!</p>';

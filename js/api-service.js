@@ -70,9 +70,37 @@ async function getTeamStatus(teamId) {
 }
 
 
+/**
+ * Ends the game for a team.
+ * @param {string} teamId - The ID of the team.
+ * @returns {Promise<object>} A promise that resolves with the final game state.
+ */
+async function endGame(teamId) {
+    const response = await fetch(`${BASE_URL}/game/end`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ teamId }),
+    });
+    return handleResponse(response);
+}
+
+/**
+ * Checks the health of the API.
+ * @returns {Promise<object>} A promise that resolves with the health status.
+ */
+async function healthCheck() {
+    const response = await fetch(`${BASE_URL}/health`);
+    return handleResponse(response);
+}
+
+
 // Export the functions to be used by other modules
 export const apiService = {
     startGame,
     completeCheckpoint,
     getTeamStatus,
+    endGame,
+    healthCheck,
 };
