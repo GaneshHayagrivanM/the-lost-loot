@@ -125,7 +125,7 @@
             const target = CHECKPOINT_LOCATIONS[nextCheckpointId];
 
             locationWatchId = geolocationService.startTracking(
-                (position) => handleLocationUpdate(position, target),
+                (position) => handleLocationUpdate(position, target, nextCheckpointId),
                 handleLocationError
             );
         }
