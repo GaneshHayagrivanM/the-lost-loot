@@ -14,8 +14,8 @@
         </header>
         <main id="login-screen">
             <h3>Enter Your Team Name</h3>
-            <form id="login-form" novalidate>
-                <input type="text" id="team-id-input" placeholder="3-50 alphanumeric characters" required pattern="^[a-zA-Z0-9]{3,50}$" title="Team Name must be 3-50 alphanumeric characters.">
+            <form id="login-form">
+                <input type="text" id="team-id-input" placeholder="e.g., The Sea Serpents" required>
                 <button type="submit" id="start-hunt-btn">Start Hunt</button>
             </form>
             <p id="error-message" class="hidden"></p>
@@ -29,7 +29,6 @@
         const teamIdInput = document.getElementById('team-id-input');
         const startButton = document.getElementById('start-hunt-btn');
         const errorMessage = document.getElementById('error-message');
-        const TEAM_ID_REGEX = /^[a-zA-Z0-9]{3,50}$/;
 
         // If already logged in, redirect to HUD
         if (gameState.get()) {
@@ -40,8 +39,8 @@
             event.preventDefault();
             const teamId = teamIdInput.value.trim();
 
-            if (!TEAM_ID_REGEX.test(teamId)) {
-                showError('Team Name must be 3-50 alphanumeric characters.');
+            if (!teamId) {
+                showError('Team Name cannot be empty.');
                 return;
             }
 

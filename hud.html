@@ -56,7 +56,7 @@
                 </div>
             </section>
 
-            <a href="#" id="scan-marker-btn" class="button-primary" disabled>Scan Next Checkpoint</a>
+            <a href="ar.html" id="scan-marker-btn" class="button-primary">Enter AR (Manual)</a>
         </main>
     </div>
 
@@ -74,13 +74,12 @@
         const playerDotEl = document.getElementById('player-dot');
         const locationErrorEl = document.getElementById('location-permission-error');
         const gameContentEl = document.getElementById('game-content');
-        const scanMarkerBtn = document.getElementById('scan-marker-btn');
 
         const PROXIMITY_TRIGGER_METERS = 15;
         let timerInterval;
         let locationWatchId = null;
         let pollingInterval = null;
-        const POLLING_RATE_MS = 5000; // Poll every 5 seconds
+        const POLLING_RATE_MS = 10000; // Poll every 10 seconds
 
         // --- Clue Data ---
         const CLUE_DATA = {
@@ -118,6 +117,8 @@
         function startLocationTracking(state) {
             const nextCheckpointId = state.unlockedCheckpoints.find(id => !state.completedCheckpoints.includes(id));
 
+            console.log("Next checkpoint to track:", nextCheckpointId); // DEBUGGING LINE
+
             if (!nextCheckpointId) {
                 distanceReadoutEl.textContent = "All checkpoints cleared!";
                 return;
@@ -125,7 +126,7 @@
             const target = CHECKPOINT_LOCATIONS[nextCheckpointId];
 
             locationWatchId = geolocationService.startTracking(
-                (position) => handleLocationUpdate(position, target),
+                (position) => handleLocationUpdate(position, target, nextCheckpointId),
                 handleLocationError
             );
         }
@@ -204,18 +205,6 @@
                     cell.classList.add('completed');
                 }
                 checkpointGridEl.appendChild(cell);
-            }
-
-            // Update Manual AR Button
-            const nextCheckpointId = state.unlockedCheckpoints.find(id => !state.completedCheckpoints.includes(id));
-            if (nextCheckpointId) {
-                scanMarkerBtn.href = `ar.html?checkpointId=${nextCheckpointId}`;
-                scanMarkerBtn.removeAttribute('disabled');
-                scanMarkerBtn.textContent = `Scan Checkpoint ${nextCheckpointId}`;
-            } else {
-                scanMarkerBtn.href = '#';
-                scanMarkerBtn.setAttribute('disabled', true);
-                scanMarkerBtn.textContent = 'All Clear!';
             }
         }
 

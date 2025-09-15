@@ -69,7 +69,6 @@ function startGame() {
     targetRounds = selectRandomDirections(ROUNDS_TO_WIN);
     console.log('Starting game with targets:', targetRounds);
     window.addEventListener('deviceorientation', handleDeviceOrientation);
-    window.addEventListener('beforeunload', cleanup); // Add cleanup listener
     startNextRound();
 }
 
@@ -117,23 +116,11 @@ function handleDeviceOrientation(event) {
     }
 }
 
-function cleanup() {
-    console.log("Cleaning up Checkpoint 1 assets and listeners...");
+async function winGame() {
+    console.log('You win!');
     gameActive = false;
     clearTimeout(holdTimer);
     window.removeEventListener('deviceorientation', handleDeviceOrientation);
-    window.removeEventListener('beforeunload', cleanup);
-
-    const compassModel = document.getElementById('compass-gltf-model');
-    if (compassModel && compassModel.parentNode) {
-        compassModel.parentNode.removeChild(compassModel);
-        console.log("Compass model removed from scene.");
-    }
-}
-
-async function winGame() {
-    console.log('You win!');
-    cleanup(); // Perform cleanup
     winMessage.classList.remove('hidden');
     try {
         await gameState.finishCheckpoint(1);
