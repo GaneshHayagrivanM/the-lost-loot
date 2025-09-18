@@ -318,3 +318,26 @@ button:disabled {
     from { background: conic-gradient(var(--color-success) 0%, transparent 0%); }
     to { background: conic-gradient(var(--color-success) 100%, transparent 100%); }
 }
+
+/* --- Pirate Map Quiz --- */
+.pirate-map {
+    background-color: var(--color-background);
+    border: 2px solid var(--color-primary-dark);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(139, 69, 19, 0.5);
+    padding: 20px;
+    border-radius: 5px;
+    font-family: var(--font-header);
+    color: var(--color-text);
+    text-align: center;
+    width: 80%;
+    max-width: 500px;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.pirate-map h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+/* Shake animation is now handled in JavaScript for A-Frame entities */
