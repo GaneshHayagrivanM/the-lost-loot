@@ -58,7 +58,7 @@ function createQuizScene() {
 
         // IMPORTANT: The user needs to provide 'slate.png' in the assets folder.
         // The path below is a placeholder and should be updated to 'assets/slate.png'.
-        answerSlate.setAttribute('src', 'assets/placeholder_slate.svg');
+        answerSlate.setAttribute('src', 'assets/slate.png');
 
         answerSlate.setAttribute('width', '2');
         answerSlate.setAttribute('height', '0.5');
