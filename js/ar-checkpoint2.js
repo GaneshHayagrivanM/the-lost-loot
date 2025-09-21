@@ -60,8 +60,8 @@ function createQuizScene() {
         // The path below is a placeholder and should be updated to 'assets/slate.png'.
         answerSlate.setAttribute('src', 'assets/slate.png');
 
-        answerSlate.setAttribute('width', '2');
-        answerSlate.setAttribute('height', '0.5');
+        answerSlate.setAttribute('width', '1');
+        answerSlate.setAttribute('height', '0.25');
         answerSlate.setAttribute('position', `0 ${yPos} 0`);
 
         const answerText = document.createElement('a-text');
