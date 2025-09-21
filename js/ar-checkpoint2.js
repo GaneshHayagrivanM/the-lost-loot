@@ -51,7 +51,7 @@ function createQuizScene() {
 
     // Create answer slate entities
     for (let i = 0; i < 3; i++) {
-        const yPos = -0.6 * i; // Increased spacing for larger slates
+        const yPos = -0.25 * i; // Increased spacing for larger slates
         const answerSlate = document.createElement('a-image');
         answerSlate.setAttribute('id', `answer-slate-${i}`);
         answerSlate.setAttribute('class', 'clickable'); // For event handling
