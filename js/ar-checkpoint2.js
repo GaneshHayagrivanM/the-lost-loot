@@ -2,8 +2,8 @@ import { gameState } from './game-state.js';
 import { QUIZ_QUESTIONS } from './quiz-data.js';
 
 // --- DOM Elements & A-Frame Scene ---
-const instructionText = document.getElementById('instruction-text');
-const winMessage = document.getElementById('win-message');
+let instructionText;
+let winMessage;
 
 // --- Game Constants ---
 const QUESTIONS_TO_WIN = 3;
@@ -234,7 +234,10 @@ async function winGame() {
 // --- Start the script ---
 // Wait for the DOM to be fully loaded before initializing
 window.addEventListener('DOMContentLoaded', () => {
+    instructionText = document.getElementById('instruction-text');
+    winMessage = document.getElementById('win-message');
     const scene = document.querySelector('a-scene');
+
     if (scene) {
         if (scene.hasLoaded) {
             initialize();
