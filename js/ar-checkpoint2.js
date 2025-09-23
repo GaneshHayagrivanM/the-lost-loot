@@ -217,15 +217,12 @@ async function winGame() {
     console.log('You win the quiz!');
     cleanup(); // Perform cleanup
 
-    winMessage.classList.remove('hidden');
-    winMessage.innerHTML = '<h2>Success!</h2><p>The Kraken is impressed!</p>';
-
     try {
+        // Save progress and then immediately redirect.
         await gameState.finishCheckpoint(2);
-        setTimeout(() => {
-            window.location.href = 'hud.html';
-        }, 4000);
+        window.location.href = 'hud.html';
     } catch (error) {
+        // If saving fails, inform the user.
         instructionText.textContent = 'Error saving progress. Please try again.';
     }
 }
