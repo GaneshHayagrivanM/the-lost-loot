@@ -2,7 +2,6 @@ import { gameState } from './game-state.js';
 import { QUIZ_QUESTIONS } from './quiz-data.js';
 
 // --- DOM Elements & A-Frame Scene ---
-const scene = document.querySelector('a-scene');
 const instructionText = document.getElementById('instruction-text');
 const winMessage = document.getElementById('win-message');
 
@@ -51,7 +50,7 @@ function createQuizScene() {
 
     // Create answer slate entities
     for (let i = 0; i < 3; i++) {
-        const yPos = -0.25 * i; // Increased spacing for larger slates
+        const yPos = -0.25 * i; // Reverted spacing for mobile visibility
         const answerSlate = document.createElement('a-image');
         answerSlate.setAttribute('id', `answer-slate-${i}`);
         answerSlate.setAttribute('class', 'clickable'); // For event handling
@@ -61,7 +60,7 @@ function createQuizScene() {
         answerSlate.setAttribute('src', 'assets/slate.png');
 
         answerSlate.setAttribute('width', '1');
-        answerSlate.setAttribute('height', '0.25');
+        answerSlate.setAttribute('height', '0.24'); // Slightly smaller to prevent hitbox overlap
         answerSlate.setAttribute('position', `0 ${yPos} 0`);
 
         const answerText = document.createElement('a-text');
@@ -233,8 +232,16 @@ async function winGame() {
 
 
 // --- Start the script ---
-if (scene.hasLoaded) {
-    initialize();
-} else {
-    scene.addEventListener('loaded', initialize);
-}
+// Wait for the DOM to be fully loaded before initializing
+window.addEventListener('DOMContentLoaded', () => {
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        if (scene.hasLoaded) {
+            initialize();
+        } else {
+            scene.addEventListener('loaded', initialize);
+        }
+    } else {
+        console.error('A-Frame scene not found, checkpoint initialization failed.');
+    }
+});
