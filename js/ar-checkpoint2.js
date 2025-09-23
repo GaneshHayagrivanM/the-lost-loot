@@ -68,8 +68,11 @@ function createQuizScene() {
         answerText.setAttribute('id', `answer-text-${i}`);
         answerText.setAttribute('value', `Option ${i + 1}`);
         answerText.setAttribute('align', 'center');
-        answerText.setAttribute('width', '3.5');
+        answerText.setAttribute('width', '2.5');
         answerText.setAttribute('position', '0 0 0.01'); // Slightly in front of the slate
+        answerText.setAttribute('font', 'exo2bold');
+        answerText.setAttribute('wrap-count', '30');
+        answerText.setAttribute('color', 'black');
         answerSlate.appendChild(answerText);
 
         answerSlate.addEventListener('click', () => handleAnswerClick(i));
