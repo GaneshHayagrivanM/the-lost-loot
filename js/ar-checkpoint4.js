@@ -1,8 +1,4 @@
-// --- Fallback Game State ---
-const gameState = window.gameState || {
-  get: () => ({ completedCheckpoints: [] }),
-  finishCheckpoint: async () => console.log("gameState.finishCheckpoint not available")
-};
+import { gameState } from './game-state.js';
 
 // --- DOM Elements & A-Frame Scene ---
 const scene = document.querySelector('a-scene');
@@ -30,9 +26,9 @@ function initialize() {
   createGameScene();
   startGame();
 }
-AFRAME.registerComponent('billboard', {
+window.AFRAME.registerComponent('billboard', {
   tick: function () {
-    const cameraPos = this.el.sceneEl.camera.getWorldPosition(new THREE.Vector3());
+    const cameraPos = this.el.sceneEl.camera.getWorldPosition(new window.THREE.Vector3());
     this.el.object3D.lookAt(cameraPos);
   }
 });
