@@ -66,7 +66,7 @@ function createGameScene() {
 
     // --- GLTF chest model ---
     const chest = document.createElement("a-entity");
-    chest.setAttribute("gltf-model", "assets/treasure_chest.gltf");
+    chest.setAttribute("gltf-model", "assets/treasure_chest.glb");
     chest.setAttribute("scale", "0.05 0.05 0.05");
     chest.setAttribute("position", "0 0 0");
     chest.setAttribute("rotation", "0 180 0");
