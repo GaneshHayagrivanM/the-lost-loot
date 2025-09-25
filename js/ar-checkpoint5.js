@@ -39,7 +39,7 @@ function setupARScene() {
     treasureChest.setAttribute('src', 'assets/treasure_chest.glb');
 
     treasureChest.setAttribute('position', '0 0 -11');
-    treasureChest.setAttribute('scale', '0.04 0.07, 0.04');
+    treasureChest.setAttribute('scale', '0.07 0.04, 0.04');
     treasureChest.setAttribute("rotation", "0 270 0");
 
     treasureChest.addEventListener('model-loaded', () => {
