@@ -40,6 +40,7 @@ function setupARScene() {
 
     treasureChest.setAttribute('position', '0 0 -11');
     treasureChest.setAttribute('scale', '0.02 0.02, 0.02');
+    treasureChest.setAttribute("rotation", "0 90 0");
 
     treasureChest.addEventListener('model-loaded', () => {
         console.log("Treasure chest model loaded.");
