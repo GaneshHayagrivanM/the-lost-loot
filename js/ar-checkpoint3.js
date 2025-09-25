@@ -332,12 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function cleanup() {
-    // Remove all created elements
+    // Remove all created 3D elements, but keep UI for the end message
     if (assets.parentNode) assets.parentNode.removeChild(assets);
     if (crosshair.parentNode) crosshair.parentNode.removeChild(crosshair);
-    if (gameUI.parentNode) gameUI.parentNode.removeChild(gameUI);
-    if (fireBtn.parentNode) fireBtn.parentNode.removeChild(fireBtn);
-    if (style.parentNode) style.parentNode.removeChild(style);
     ships.forEach(ship => {
         if (ship.parentNode) ship.parentNode.removeChild(ship);
     });
