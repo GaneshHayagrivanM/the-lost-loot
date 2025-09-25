@@ -25,13 +25,15 @@ function initialize() {
 
   createGameScene();
   startGame();
+
+  // --- Register A-Frame Components ---
+  window.AFRAME.registerComponent('billboard', {
+    tick: function () {
+      const cameraPos = this.el.sceneEl.camera.getWorldPosition(new window.THREE.Vector3());
+      this.el.object3D.lookAt(cameraPos);
+    }
+  });
 }
-window.AFRAME.registerComponent('billboard', {
-  tick: function () {
-    const cameraPos = this.el.sceneEl.camera.getWorldPosition(new window.THREE.Vector3());
-    this.el.object3D.lookAt(cameraPos);
-  }
-});
 
 function createGameScene() {
   console.log("Creating 6 chest entities...");
