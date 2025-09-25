@@ -1,7 +1,7 @@
 import { gameState } from './game-state.js';
 
 // --- DOM Elements & A-Frame Scene ---
-const scene = document.querySelector('a-scene');
+let scene;
 const instructionText = document.getElementById('instruction-text');
 const winMessage = document.getElementById('win-message');
 
@@ -226,8 +226,11 @@ async function winGame() {
 }
 
 // --- Start the script ---
-if (scene.hasLoaded) {
-  initialize();
-} else {
-  scene.addEventListener('loaded', initialize);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    scene = document.querySelector('a-scene');
+    if (scene.hasLoaded) {
+        initialize();
+    } else {
+        scene.addEventListener('loaded', initialize);
+    }
+});
