@@ -1,10 +1,11 @@
 import { gameState } from './game-state.js';
 
 // --- DOM Elements ---
-const instructionText = document.getElementById('instruction-text');
-const winMessage = document.getElementById('win-message');
-const progressIndicator = document.getElementById('progress-indicator');
-const screenGlow = document.getElementById('screen-glow');
+// These will be assigned once the DOM is loaded.
+let instructionText;
+let winMessage;
+let progressIndicator;
+let screenGlow;
 
 // --- Game Constants & State ---
 const ROUNDS_TO_WIN = 3;
@@ -163,9 +164,24 @@ function selectRandomDirections(count) {
     return shuffled.slice(0, count);
 }
 
-const scene = document.querySelector('a-scene');
-if (scene.hasLoaded) {
-    initialize();
-} else {
-    scene.addEventListener('loaded', initialize);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // Assign DOM elements now that the DOM is ready
+    instructionText = document.getElementById('instruction-text');
+    winMessage = document.getElementById('win-message');
+    progressIndicator = document.getElementById('progress-indicator');
+    screenGlow = document.getElementById('screen-glow');
+
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        if (scene.hasLoaded) {
+            initialize();
+        } else {
+            scene.addEventListener('loaded', initialize);
+        }
+    } else {
+        console.error('A-Frame scene not found!');
+        if (instructionText) {
+            instructionText.textContent = 'Error: Could not load AR scene.';
+        }
+    }
+});
