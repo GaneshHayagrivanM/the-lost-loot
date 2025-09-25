@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ship = document.createElement('a-entity');
       ship.setAttribute('gltf-model', '#shipModel');
       ship.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
-      ship.setAttribute('scale', '0.02 0.02 0.02'); // Adjusted for markerless
+      ship.setAttribute('scale', '0.5 0.5 0.5'); // Adjusted for markerless
       ship.setAttribute('rotation', '0 180 0');
       ship.id = `ship${i}`;
       ship.classList.add('clickable');
