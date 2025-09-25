@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("Cannot fire: game not active");
       return;
     }
-    const camera = scene.querySelector('#camera');
     if (!camera) {
       console.error("Camera not found");
       return;
@@ -265,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function enableVerticalPositionWithLookControls() {
-    const camera = document.querySelector('#camera');
     if (!camera) return;
 
     let lastTouchY = null;
