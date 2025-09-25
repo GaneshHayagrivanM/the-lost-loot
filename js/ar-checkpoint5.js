@@ -12,6 +12,7 @@ let finalTimeEl;
 // --- Game State ---
 let keysInserted = 0;
 let selectedKey = null;
+let isChestHovered = false; // Track if the cursor is over the chest
 
 // --- Initialization ---
 function initialize() {
@@ -26,7 +27,7 @@ function initialize() {
 
     // Show the final challenge container
     finalCheckpointContainer.classList.remove('hidden');
-    instructionText.textContent = "You've found the final challenge! Select a key, then tap the chest to unlock it.";
+    instructionText.textContent = "You've found the final challenge! Drag and drop the keys onto the treasure chest to unlock it.";
 
     setupARScene();
     createKeyIcons();
@@ -46,11 +47,17 @@ function setupARScene() {
         console.log("Treasure chest model loaded.");
     });
 
-    // Add click listener for the new interaction model
-    treasureChest.addEventListener('click', () => {
-        if (selectedKey) {
-            handleKeyInsertion();
-        }
+    // Listen for mouse events to know when the chest is a valid drop target
+    treasureChest.addEventListener('mouseenter', () => {
+        isChestHovered = true;
+        // Optional: Add visual feedback, e.g., glowing effect
+        treasureChest.setAttribute('material', 'emissive: #ffcc00; emissiveIntensity: 0.2');
+    });
+
+    treasureChest.addEventListener('mouseleave', () => {
+        isChestHovered = false;
+        // Optional: Remove visual feedback
+        treasureChest.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
     });
 
     scene.appendChild(treasureChest);
@@ -63,22 +70,26 @@ function createKeyIcons() {
     // Use the actual keys collected by the player
     state.keysCollected.forEach(keyId => {
         const keyIcon = document.createElement('div');
-        // Re-use the styling from the HUD's key slots for visibility
         keyIcon.classList.add('key-slot', 'collected');
         keyIcon.dataset.keyId = keyId;
+        keyIcon.draggable = true; // Make the icon draggable
         keyIconsContainer.appendChild(keyIcon);
 
-        keyIcon.addEventListener('click', () => {
-            // Prevent interaction with an already used key
+        // Drag and drop event listeners
+        keyIcon.addEventListener('dragstart', (event) => {
+            // Can't drag a used key
             if (keyIcon.classList.contains('used')) {
+                event.preventDefault();
                 return;
             }
-            // Handle key selection
-            if (selectedKey) {
-                selectedKey.classList.remove('selected');
-            }
-            selectedKey = keyIcon;
-            selectedKey.classList.add('selected');
+            selectedKey = keyIcon; // Set the selected key
+            // Add visual feedback for dragging
+            setTimeout(() => keyIcon.classList.add('dragging'), 0);
+        });
+
+        keyIcon.addEventListener('dragend', () => {
+            keyIcon.classList.remove('dragging'); // Clean up visual feedback
+            selectedKey = null; // Clear selection after drag ends
         });
     });
 }
@@ -183,6 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             scene.addEventListener('loaded', initialize);
         }
+
+        // Add scene-wide drag and drop handlers
+        scene.addEventListener('dragover', (event) => {
+            // Prevent default behavior to allow dropping
+            event.preventDefault();
+        });
+
+        scene.addEventListener('drop', (event) => {
+            event.preventDefault(); // Prevent default browser action
+            // Check if a key is selected and the drop target is the chest
+            if (selectedKey && isChestHovered) {
+                handleKeyInsertion();
+            }
+        });
     } else {
         console.error('A-Frame scene not found!');
         if(instructionText) {
