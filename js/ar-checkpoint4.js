@@ -2,8 +2,8 @@ import { gameState } from './game-state.js';
 
 // --- DOM Elements & A-Frame Scene ---
 let scene;
-const instructionText = document.getElementById('instruction-text');
-const winMessage = document.getElementById('win-message');
+let instructionText;
+let winMessage;
 
 // --- Game Constants ---
 const SYMBOLS = ["P", "I", "R", "A", "T", "E"];
@@ -55,6 +55,7 @@ function createGameScene() {
 
   SYMBOLS.forEach((sym, i) => {
     const wrapper = document.createElement("a-entity");
+    wrapper.classList.add('checkpoint4-asset'); // Add class for cleanup
     wrapper.setAttribute("position", `${gridPositions[i].x} ${gridPositions[i].y} ${gridPositions[i].z}`);
 
     // Calculate rotation angle based on index
@@ -67,7 +68,7 @@ function createGameScene() {
     chest.setAttribute("gltf-model", "assets/treasure_chest.glb");
     chest.setAttribute("scale", "0.05 0.05 0.05");
     chest.setAttribute("position", "0 0 0");
-    chest.setAttribute("rotation", "0 90 0");
+    chest.setAttribute("rotation", "0 180 0");
     wrapper.appendChild(chest);
 
     // --- Invisible collider for click detection ---
@@ -204,6 +205,15 @@ function cleanup() {
   console.log("Cleaning up Checkpoint 4 assets and listeners...");
   gameActive = false;
   window.removeEventListener('beforeunload', cleanup);
+
+  // Remove all entities created for this checkpoint
+  const assets = document.querySelectorAll('.checkpoint4-asset');
+  assets.forEach(asset => {
+    if (asset.parentNode) {
+      asset.parentNode.removeChild(asset);
+    }
+  });
+  console.log(`Removed ${assets.length} checkpoint assets.`);
 }
 
 async function winGame() {
@@ -227,7 +237,11 @@ async function winGame() {
 
 // --- Start the script ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Assign DOM elements now that the DOM is ready
     scene = document.querySelector('a-scene');
+    instructionText = document.getElementById('instruction-text');
+    winMessage = document.getElementById('win-message');
+
     if (scene.hasLoaded) {
         initialize();
     } else {
