@@ -1,4 +1,5 @@
 import { gameState } from './game-state.js';
+import { apiService } from './api-service.js';
 
 // --- DOM Elements ---
 // These will be assigned once the DOM is loaded.
