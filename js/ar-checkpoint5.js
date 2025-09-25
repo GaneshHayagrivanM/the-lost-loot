@@ -66,19 +66,24 @@ function createKeyIcons() {
 
         // Drag and drop event listeners
         keyIcon.addEventListener('dragstart', (event) => {
+            console.log('Drag Start:', { keyId: keyIcon.dataset.keyId });
             // Can't drag a used key
             if (keyIcon.classList.contains('used')) {
+                console.log('Attempted to drag a used key. Preventing drag.');
                 event.preventDefault();
                 return;
             }
             selectedKey = keyIcon; // Set the selected key
+            console.log('Selected Key:', selectedKey);
             // Add visual feedback for dragging
             setTimeout(() => keyIcon.classList.add('dragging'), 0);
         });
 
         keyIcon.addEventListener('dragend', () => {
+            console.log('Drag End');
             keyIcon.classList.remove('dragging'); // Clean up visual feedback
             selectedKey = null; // Clear selection after drag ends
+            console.log('Selected Key Cleared');
         });
     });
 }
@@ -191,8 +196,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         scene.addEventListener('drop', (event) => {
+            console.log('Drop Event Triggered');
             event.preventDefault();
-            if (!selectedKey) return;
+            if (!selectedKey) {
+                console.log('Drop event ignored: No key was selected.');
+                return;
+            }
+            console.log('Processing drop for key:', selectedKey.dataset.keyId);
 
             // Manual raycasting for reliable drop detection
             const cameraEl = document.querySelector('#camera');
@@ -206,6 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 (event.clientX / window.innerWidth) * 2 - 1,
                 -(event.clientY / window.innerHeight) * 2 + 1
             );
+            console.log('Drop coordinates (normalized):', screenPoint);
+
 
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(screenPoint, camera);
@@ -217,8 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const intersects = raycaster.intersectObject(treasureChestModel.object3D, true);
+            console.log('Raycaster intersections:', intersects);
+
 
             if (intersects.length > 0) {
+                console.log('Intersection with treasure chest confirmed!');
                 handleKeyInsertion();
 
                 // Briefly make the chest glow to confirm the drop
@@ -226,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     treasureChestModel.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
                 }, 500);
+            } else {
+                console.log('No intersection with treasure chest detected.');
             }
         });
     } else {
