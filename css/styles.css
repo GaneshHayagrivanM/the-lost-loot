@@ -341,3 +341,85 @@ button:disabled {
 }
 
 /* Shake animation is now handled in JavaScript for A-Frame entities */
+
+/* --- Final Checkpoint Styles --- */
+#final-checkpoint-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+#key-icons-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    pointer-events: auto;
+}
+
+.key-icon {
+    width: 60px;
+    height: 60px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔑</text></svg>');
+    background-size: cover;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+    border: 3px solid transparent;
+    border-radius: 10px;
+}
+
+.key-icon.selected {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px gold;
+    border-color: gold;
+}
+
+.key-icon.used {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#coin-game-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.gold-coin {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💰</text></svg>');
+    background-size: cover;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.gold-coin:hover {
+    transform: scale(1.1);
+}
+
+.gold-coin.collected {
+    opacity: 0;
+    transform: scale(0);
+}
+
+#final-win-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    pointer-events: auto;
+}
