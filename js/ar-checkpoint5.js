@@ -12,7 +12,6 @@ let finalTimeEl;
 // --- Game State ---
 let keysInserted = 0;
 let selectedKey = null;
-let isChestHovered = false; // Track if the cursor is over the chest
 
 // --- Initialization ---
 function initialize() {
@@ -47,18 +46,8 @@ function setupARScene() {
         console.log("Treasure chest model loaded.");
     });
 
-    // Listen for mouse events to know when the chest is a valid drop target
-    treasureChest.addEventListener('mouseenter', () => {
-        isChestHovered = true;
-        // Optional: Add visual feedback, e.g., glowing effect
-        treasureChest.setAttribute('material', 'emissive: #ffcc00; emissiveIntensity: 0.2');
-    });
-
-    treasureChest.addEventListener('mouseleave', () => {
-        isChestHovered = false;
-        // Optional: Remove visual feedback
-        treasureChest.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
-    });
+    // The old mouseenter/mouseleave listeners are removed as they are unreliable
+    // during a drag-and-drop operation.
 
     scene.appendChild(treasureChest);
 }
@@ -202,10 +191,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         scene.addEventListener('drop', (event) => {
-            event.preventDefault(); // Prevent default browser action
-            // Check if a key is selected and the drop target is the chest
-            if (selectedKey && isChestHovered) {
+            event.preventDefault();
+
+            if (!selectedKey) return;
+
+            // Use the raycaster component on the cursor to find the drop target
+            const cursor = document.querySelector('[cursor]');
+            const intersectedEl = cursor.components.cursor.intersectedEl;
+
+            if (intersectedEl && intersectedEl.id === 'treasure-chest-model') {
                 handleKeyInsertion();
+
+                // Briefly make the chest glow to confirm the drop
+                intersectedEl.setAttribute('material', 'emissive: #00ff00; emissiveIntensity: 0.5');
+                setTimeout(() => {
+                    intersectedEl.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
+                }, 500);
             }
         });
     } else {
