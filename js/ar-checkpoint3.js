@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const scene = document.querySelector('a-scene');
-  const camera = document.querySelector('a-camera');
+  const camera = document.querySelector('#camera');
 
   // Add assets
   const assets = document.createElement('a-assets');
