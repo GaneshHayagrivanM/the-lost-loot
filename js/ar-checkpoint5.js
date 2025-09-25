@@ -57,20 +57,30 @@ function setupARScene() {
 }
 
 function createKeyIcons() {
-    for (let i = 1; i <= 3; i++) {
+    const state = gameState.get();
+    if (!state) return;
+
+    // Use the actual keys collected by the player
+    state.keysCollected.forEach(keyId => {
         const keyIcon = document.createElement('div');
-        keyIcon.classList.add('key-icon');
-        keyIcon.dataset.keyId = i;
+        // Re-use the styling from the HUD's key slots for visibility
+        keyIcon.classList.add('key-slot', 'collected');
+        keyIcon.dataset.keyId = keyId;
         keyIconsContainer.appendChild(keyIcon);
 
         keyIcon.addEventListener('click', () => {
+            // Prevent interaction with an already used key
+            if (keyIcon.classList.contains('used')) {
+                return;
+            }
+            // Handle key selection
             if (selectedKey) {
                 selectedKey.classList.remove('selected');
             }
             selectedKey = keyIcon;
             selectedKey.classList.add('selected');
         });
-    }
+    });
 }
 
 function handleKeyInsertion() {

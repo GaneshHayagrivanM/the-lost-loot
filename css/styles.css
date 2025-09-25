@@ -341,3 +341,11 @@ button:disabled {
 }
 
 /* Shake animation is now handled in JavaScript for A-Frame entities */
+
+/* Final Checkpoint Key Icons */
+#key-icons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
