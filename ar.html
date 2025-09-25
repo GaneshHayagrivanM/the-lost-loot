@@ -26,50 +26,6 @@
     <!-- A-Frame and AR.js Libraries -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-
-    <style>
-        #seq-board {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-        }
-        .seq-slot {
-            width: 40px;
-            height: 40px;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: #fff;
-            font-weight: bold;
-        }
-        .seq-slot.filled {
-            background-color: #4CAF50;
-            border-color: #4CAF50;
-        }
-        #wrong-msg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 0, 0, 0.7);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 24px;
-            z-index: 100;
-            display: none; /* Initially hidden */
-        }
-    </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
     <!-- AR Scene for a markerless experience -->
@@ -89,15 +45,6 @@
 
         <div id="feedback-container">
             <p id="instruction-text">Loading minigame...</p>
-            <div id="wrong-msg">Wrong! Try again.</div>
-            <div id="seq-board">
-                <span class="seq-slot">•</span>
-                <span class="seq-slot">•</span>
-                <span class="seq-slot">•</span>
-                <span class="seq-slot">•</span>
-                <span class="seq-slot">•</span>
-                <span class="seq-slot">•</span>
-            </div>
         </div>
 
         <div id="win-message" class="hidden">

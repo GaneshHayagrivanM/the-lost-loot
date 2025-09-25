@@ -38,6 +38,47 @@ function initialize() {
 function createGameScene() {
   console.log("Creating 6 chest entities...");
 
+  // --- Create Styles ---
+  const style = document.createElement('style');
+  style.id = 'checkpoint4-styles'; // ID for easy removal
+  style.innerHTML = `
+    #seq-board {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;
+        display: flex; gap: 10px; z-index: 10;
+    }
+    .seq-slot {
+        width: 40px; height: 40px; border: 2px solid #fff; border-radius: 50%;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 24px; color: #fff; font-weight: bold;
+    }
+    .seq-slot.filled { background-color: #4CAF50; border-color: #4CAF50; }
+    #wrong-msg {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background-color: rgba(255,0,0,0.7); color: white; padding: 20px;
+        border-radius: 10px; font-size: 24px; z-index: 100; display: none;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // --- Create UI Elements ---
+  const feedbackContainer = document.getElementById('feedback-container');
+  const wrongMsg = document.createElement('div');
+  wrongMsg.id = 'wrong-msg';
+  wrongMsg.textContent = 'Wrong! Try again.';
+  feedbackContainer.appendChild(wrongMsg);
+
+  const seqBoard = document.createElement('div');
+  seqBoard.id = 'seq-board';
+  for (let i = 0; i < SYMBOLS.length; i++) {
+    const slot = document.createElement('span');
+    slot.className = 'seq-slot';
+    slot.textContent = '•';
+    seqBoard.appendChild(slot);
+  }
+  feedbackContainer.appendChild(seqBoard);
+
+
   instructionText.textContent = "Tap the chests in the order: P-I-R-A-T-E";
 
   const radius = 15;
@@ -214,6 +255,14 @@ function cleanup() {
     }
   });
   console.log(`Removed ${assets.length} checkpoint assets.`);
+
+  // Remove UI elements and styles
+  const wrongMsg = document.getElementById('wrong-msg');
+  if (wrongMsg) wrongMsg.remove();
+  const seqBoard = document.getElementById('seq-board');
+  if (seqBoard) seqBoard.remove();
+  const styles = document.getElementById('checkpoint4-styles');
+  if (styles) styles.remove();
 }
 
 async function winGame() {
