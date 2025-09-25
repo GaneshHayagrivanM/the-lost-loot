@@ -94,6 +94,7 @@ function handleKeyInsertion() {
     if (selectedKey && !selectedKey.classList.contains('used')) {
         selectedKey.classList.add('used');
         selectedKey.classList.remove('selected');
+        selectedKey.style.visibility = 'hidden'; // Make the key disappear
         keysInserted++;
         selectedKey = null;
 
@@ -104,43 +105,13 @@ function handleKeyInsertion() {
 }
 
 function openChest() {
-    instructionText.textContent = "The chest is unlocked! Get ready to collect the loot!";
-    keyIconsContainer.style.display = 'none'; // Hide key icons
+    instructionText.textContent = "The chest is unlocked! You've found the Lost Loot!";
+    keyIconsContainer.style.display = 'none'; // Hide key icons area
 
+    // Call endGame directly, passing 0 for coins as they are no longer collected
     setTimeout(() => {
-        startCoinGame();
-    }, 2000);
-}
-
-function startCoinGame() {
-    instructionText.textContent = "Tap the gold coins to collect them!";
-    let coinsCollected = 0;
-    coinGameContainer.classList.remove('hidden');
-
-    const coinInterval = setInterval(() => {
-        const coin = document.createElement('div');
-        coin.classList.add('gold-coin');
-        coin.style.top = `${Math.random() * 80 + 10}%`;
-        coin.style.left = `${Math.random() * 80 + 10}%`;
-        coinGameContainer.appendChild(coin);
-
-        coin.addEventListener('click', () => {
-            coinsCollected++;
-            coin.classList.add('collected');
-            setTimeout(() => coin.remove(), 200);
-        });
-
-        setTimeout(() => {
-            if (coin.parentNode) {
-                coin.remove();
-            }
-        }, 1500);
-    }, 500);
-
-    setTimeout(() => {
-        clearInterval(coinInterval);
-        endGame(coinsCollected);
-    }, 10000);
+        endGame(0);
+    }, 1500);
 }
 
 async function endGame(coinsCollected) {
@@ -162,9 +133,8 @@ async function endGame(coinsCollected) {
     const finalTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
     finalTimeEl.textContent = finalTime;
-    instructionText.textContent = `You collected ${coinsCollected} coins!`;
+    instructionText.textContent = `Congratulations! You've found the Lost Loot!`;
     finalWinMessage.classList.remove('hidden');
-    coinGameContainer.classList.add('hidden');
 
     setTimeout(() => {
         sessionStorage.clear();
