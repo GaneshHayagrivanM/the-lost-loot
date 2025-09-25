@@ -349,3 +349,21 @@ button:disabled {
     gap: 1rem;
     margin-bottom: 1rem;
 }
+
+/* Style for the selected key icon */
+#key-icons-container .key-slot.selected {
+    border-color: gold;
+    box-shadow: 0 0 15px gold;
+}
+
+/* Visual feedback for the key being dragged */
+#key-icons-container .key-slot.dragging {
+    opacity: 0.5;
+    transform: scale(0.9);
+}
+
+/* Style for the treasure chest when it's a valid drop target */
+#treasure-chest-model.drop-target {
+    /* The visual feedback for the 3D model will be handled in JS,
+       but we can add a class for state tracking. */
+}
