@@ -192,20 +192,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         scene.addEventListener('drop', (event) => {
             event.preventDefault();
-
             if (!selectedKey) return;
 
-            // Use the raycaster component on the cursor to find the drop target
-            const cursor = document.querySelector('[cursor]');
-            const intersectedEl = cursor.components.cursor.intersectedEl;
+            // Manual raycasting for reliable drop detection
+            const cameraEl = document.querySelector('#camera');
+            const camera = cameraEl.getObject3D('camera');
+            if (!camera) {
+                console.error("Camera not found for raycasting.");
+                return;
+            }
 
-            if (intersectedEl && intersectedEl.id === 'treasure-chest-model') {
+            const screenPoint = new THREE.Vector2(
+                (event.clientX / window.innerWidth) * 2 - 1,
+                -(event.clientY / window.innerHeight) * 2 + 1
+            );
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(screenPoint, camera);
+
+            const treasureChestModel = document.getElementById('treasure-chest-model');
+            if (!treasureChestModel || !treasureChestModel.object3D) {
+                console.warn('Treasure chest model not ready for raycasting.');
+                return;
+            }
+
+            const intersects = raycaster.intersectObject(treasureChestModel.object3D, true);
+
+            if (intersects.length > 0) {
                 handleKeyInsertion();
 
                 // Briefly make the chest glow to confirm the drop
-                intersectedEl.setAttribute('material', 'emissive: #00ff00; emissiveIntensity: 0.5');
+                treasureChestModel.setAttribute('material', 'emissive: #00ff00; emissiveIntensity: 0.5');
                 setTimeout(() => {
-                    intersectedEl.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
+                    treasureChestModel.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
                 }, 500);
             }
         });
