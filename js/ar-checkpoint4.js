@@ -67,7 +67,7 @@ function createGameScene() {
     chest.setAttribute("gltf-model", "assets/treasure_chest.glb");
     chest.setAttribute("scale", "0.05 0.05 0.05");
     chest.setAttribute("position", "0 0 0");
-    chest.setAttribute("rotation", "0 180 0");
+    chest.setAttribute("rotation", "0 90 0");
     wrapper.appendChild(chest);
 
     // --- Invisible collider for click detection ---
