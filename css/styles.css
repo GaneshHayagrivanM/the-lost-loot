@@ -354,12 +354,7 @@ button:disabled {
 #key-icons-container .key-slot.selected {
     border-color: gold;
     box-shadow: 0 0 15px gold;
-}
-
-/* Visual feedback for the key being dragged */
-#key-icons-container .key-slot.dragging {
-    opacity: 0.5;
-    transform: scale(0.9);
+    transform: scale(1.1); /* Add scaling to make it more obvious */
 }
 
 /* Style for the treasure chest when it's a valid drop target */
