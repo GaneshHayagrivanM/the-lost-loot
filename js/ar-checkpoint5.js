@@ -1,3 +1,5 @@
+import { gameState } from './game-state.js';
+
 // --- DOM Elements ---
 // These will be assigned once the DOM is loaded.
 let instructionText;
