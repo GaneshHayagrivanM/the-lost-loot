@@ -154,9 +154,17 @@ async function endGame(coinsCollected) {
 }
 
 // --- Main ---
-const scene = document.querySelector('a-scene');
-if (scene.hasLoaded) {
-    initialize();
-} else {
-    scene.addEventListener('loaded', initialize);
-}
+// Wait for the DOM to be fully loaded before trying to access A-Frame components.
+document.addEventListener('DOMContentLoaded', () => {
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        if (scene.hasLoaded) {
+            initialize();
+        } else {
+            scene.addEventListener('loaded', initialize);
+        }
+    } else {
+        console.error('A-Frame scene not found!');
+        instructionText.textContent = 'Error: Could not load AR scene.';
+    }
+});

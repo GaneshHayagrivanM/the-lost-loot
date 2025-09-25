@@ -163,9 +163,16 @@ function selectRandomDirections(count) {
     return shuffled.slice(0, count);
 }
 
-const scene = document.querySelector('a-scene');
-if (scene.hasLoaded) {
-    initialize();
-} else {
-    scene.addEventListener('loaded', initialize);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        if (scene.hasLoaded) {
+            initialize();
+        } else {
+            scene.addEventListener('loaded', initialize);
+        }
+    } else {
+        console.error('A-Frame scene not found!');
+        instructionText.textContent = 'Error: Could not load AR scene.';
+    }
+});
