@@ -2,12 +2,13 @@ import { gameState } from './game-state.js';
 import { apiService } from './api-service.js';
 
 // --- DOM Elements ---
-const instructionText = document.getElementById('instruction-text');
-const finalCheckpointContainer = document.getElementById('final-checkpoint-container');
-const keyIconsContainer = document.getElementById('key-icons-container');
-const coinGameContainer = document.getElementById('coin-game-container');
-const finalWinMessage = document.getElementById('final-win-message');
-const finalTimeEl = document.getElementById('final-time');
+// These will be assigned once the DOM is loaded.
+let instructionText;
+let finalCheckpointContainer;
+let keyIconsContainer;
+let coinGameContainer;
+let finalWinMessage;
+let finalTimeEl;
 
 // --- Game State ---
 let keysInserted = 0;
@@ -156,6 +157,14 @@ async function endGame(coinsCollected) {
 // --- Main ---
 // Wait for the DOM to be fully loaded before trying to access A-Frame components.
 document.addEventListener('DOMContentLoaded', () => {
+    // Assign DOM elements now that the DOM is ready
+    instructionText = document.getElementById('instruction-text');
+    finalCheckpointContainer = document.getElementById('final-checkpoint-container');
+    keyIconsContainer = document.getElementById('key-icons-container');
+    coinGameContainer = document.getElementById('coin-game-container');
+    finalWinMessage = document.getElementById('final-win-message');
+    finalTimeEl = document.getElementById('final-time');
+
     const scene = document.querySelector('a-scene');
     if (scene) {
         if (scene.hasLoaded) {
@@ -165,6 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         console.error('A-Frame scene not found!');
-        instructionText.textContent = 'Error: Could not load AR scene.';
+        if(instructionText) {
+            instructionText.textContent = 'Error: Could not load AR scene.';
+        }
     }
 });
