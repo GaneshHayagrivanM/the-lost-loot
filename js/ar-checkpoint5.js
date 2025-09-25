@@ -38,8 +38,8 @@ function setupARScene() {
     treasureChest.setAttribute('id', 'treasure-chest-model');
     treasureChest.setAttribute('src', 'assets/treasure_chest.glb');
 
-    treasureChest.setAttribute('position', '0 0 -10');
-    treasureChest.setAttribute('scale', '0.05 0.05 0.05');
+    treasureChest.setAttribute('position', '0 0 -11');
+    treasureChest.setAttribute('scale', '0.02 0.02, 0.02');
 
     treasureChest.addEventListener('model-loaded', () => {
         console.log("Treasure chest model loaded.");
