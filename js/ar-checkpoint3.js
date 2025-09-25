@@ -3,7 +3,7 @@ import { gameState } from './game-state.js';
 console.log("Mobile Pirate Ship Game loaded");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const TIME_LIMIT = 30 * 1000;
+  const TIME_LIMIT = 90 * 1000;
   const SHIPS_TO_HIT = 3;
 
   let gameActive = true; // Game starts immediately
