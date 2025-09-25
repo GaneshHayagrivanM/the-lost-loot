@@ -46,8 +46,17 @@ function setupARScene() {
         console.log("Treasure chest model loaded.");
     });
 
-    // The old mouseenter/mouseleave listeners are removed as they are unreliable
-    // during a drag-and-drop operation.
+    // 'Tap' event listener for the chest
+    treasureChest.addEventListener('click', () => {
+        if (selectedKey) {
+            handleKeyInsertion();
+            // Briefly make the chest glow to confirm the tap
+            treasureChest.setAttribute('material', 'emissive: #00ff00; emissiveIntensity: 0.5');
+            setTimeout(() => {
+                treasureChest.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
+            }, 500);
+        }
+    });
 
     scene.appendChild(treasureChest);
 }
@@ -61,29 +70,22 @@ function createKeyIcons() {
         const keyIcon = document.createElement('div');
         keyIcon.classList.add('key-slot', 'collected');
         keyIcon.dataset.keyId = keyId;
-        keyIcon.draggable = true; // Make the icon draggable
+        keyIcon.draggable = false; // No longer draggable
         keyIconsContainer.appendChild(keyIcon);
 
-        // Drag and drop event listeners
-        keyIcon.addEventListener('dragstart', (event) => {
-            console.log('Drag Start:', { keyId: keyIcon.dataset.keyId });
-            // Can't drag a used key
-            if (keyIcon.classList.contains('used')) {
-                console.log('Attempted to drag a used key. Preventing drag.');
-                event.preventDefault();
-                return;
-            }
-            selectedKey = keyIcon; // Set the selected key
-            console.log('Selected Key:', selectedKey);
-            // Add visual feedback for dragging
-            setTimeout(() => keyIcon.classList.add('dragging'), 0);
-        });
+        // 'Select' event listener
+        keyIcon.addEventListener('click', () => {
+            if (keyIcon.classList.contains('used')) return;
 
-        keyIcon.addEventListener('dragend', () => {
-            console.log('Drag End');
-            keyIcon.classList.remove('dragging'); // Clean up visual feedback
-            selectedKey = null; // Clear selection after drag ends
-            console.log('Selected Key Cleared');
+            // Deselect any other selected key
+            const currentlySelected = document.querySelector('.key-slot.selected');
+            if (currentlySelected) {
+                currentlySelected.classList.remove('selected');
+            }
+
+            // Select the new key
+            keyIcon.classList.add('selected');
+            selectedKey = keyIcon;
         });
     });
 }
@@ -189,62 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
             scene.addEventListener('loaded', initialize);
         }
 
-        // Add scene-wide drag and drop handlers
-        scene.addEventListener('dragover', (event) => {
-            // Prevent default behavior to allow dropping
-            event.preventDefault();
-        });
-
-        scene.addEventListener('drop', (event) => {
-            console.log('Drop Event Triggered');
-            event.preventDefault();
-            if (!selectedKey) {
-                console.log('Drop event ignored: No key was selected.');
-                return;
-            }
-            console.log('Processing drop for key:', selectedKey.dataset.keyId);
-
-            // Manual raycasting for reliable drop detection
-            const cameraEl = document.querySelector('#camera');
-            const camera = cameraEl.getObject3D('camera');
-            if (!camera) {
-                console.error("Camera not found for raycasting.");
-                return;
-            }
-
-            const screenPoint = new THREE.Vector2(
-                (event.clientX / window.innerWidth) * 2 - 1,
-                -(event.clientY / window.innerHeight) * 2 + 1
-            );
-            console.log('Drop coordinates (normalized):', screenPoint);
-
-
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(screenPoint, camera);
-
-            const treasureChestModel = document.getElementById('treasure-chest-model');
-            if (!treasureChestModel || !treasureChestModel.object3D) {
-                console.warn('Treasure chest model not ready for raycasting.');
-                return;
-            }
-
-            const intersects = raycaster.intersectObject(treasureChestModel.object3D, true);
-            console.log('Raycaster intersections:', intersects);
-
-
-            if (intersects.length > 0) {
-                console.log('Intersection with treasure chest confirmed!');
-                handleKeyInsertion();
-
-                // Briefly make the chest glow to confirm the drop
-                treasureChestModel.setAttribute('material', 'emissive: #00ff00; emissiveIntensity: 0.5');
-                setTimeout(() => {
-                    treasureChestModel.setAttribute('material', 'emissive: #000000; emissiveIntensity: 0');
-                }, 500);
-            } else {
-                console.log('No intersection with treasure chest detected.');
-            }
-        });
+        // Drag-and-drop listeners are no longer needed.
+        // The 'click' listener on the treasure chest model handles the interaction.
     } else {
         console.error('A-Frame scene not found!');
         if(instructionText) {
