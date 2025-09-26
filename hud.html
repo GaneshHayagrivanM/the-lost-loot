@@ -55,8 +55,6 @@
                     </div>
                 </div>
             </section>
-
-            <a href="#" id="scan-marker-btn" class="button-primary" disabled>Scan Next Checkpoint</a>
         </main>
     </div>
 
@@ -74,7 +72,7 @@
         const playerDotEl = document.getElementById('player-dot');
         const locationErrorEl = document.getElementById('location-permission-error');
         const gameContentEl = document.getElementById('game-content');
-        const scanMarkerBtn = document.getElementById('scan-marker-btn');
+
 
         const PROXIMITY_TRIGGER_METERS = 1000;
         let timerInterval;
@@ -202,17 +200,6 @@
                 checkpointGridEl.appendChild(cell);
             }
 
-            // Update Manual AR Button
-            const nextCheckpointId = state.unlockedCheckpoints.find(id => !state.completedCheckpoints.includes(id));
-            if (nextCheckpointId) {
-                scanMarkerBtn.href = `ar.html?checkpointId=${nextCheckpointId}`;
-                scanMarkerBtn.removeAttribute('disabled');
-                scanMarkerBtn.textContent = `Scan Checkpoint ${nextCheckpointId}`;
-            } else {
-                scanMarkerBtn.href = '#';
-                scanMarkerBtn.setAttribute('disabled', true);
-                scanMarkerBtn.textContent = 'All Clear!';
-            }
         }
 
         function startTimer(startTime) {
