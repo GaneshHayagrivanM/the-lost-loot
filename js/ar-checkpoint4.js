@@ -6,8 +6,9 @@ let instructionText;
 let winMessage;
 
 // --- Game Constants ---
+//const SYMBOLS = ["I", "A", "P", "E", "T", "R"];
 const SYMBOLS = ["P", "I", "R", "A", "T", "E"];
-const targetSequence = ["I", "A", "P", "E", "T", "R"];
+const targetSequence = ["P", "I", "R", "A", "T", "E"];
 
 // --- Game State ---
 let gameActive = false;
