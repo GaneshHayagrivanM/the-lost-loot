@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const assets = document.createElement('a-assets');
   const shipModel = document.createElement('a-asset-item');
   shipModel.setAttribute('id', 'shipModel');
-  shipModel.setAttribute('src', 'assets/compass.glb'); // Placeholder path
+  shipModel.setAttribute('src', 'assets/pirate_ship.glb'); // Placeholder path
   assets.appendChild(shipModel);
   scene.appendChild(assets);
 
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ship = document.createElement('a-entity');
       ship.setAttribute('gltf-model', '#shipModel');
       ship.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
-      ship.setAttribute('scale', '0.5 0.5 0.5'); // Adjusted for markerless
+      ship.setAttribute('scale', '0.2 0.2 0.2'); // Adjusted for markerless
       ship.setAttribute('rotation', '0 180 0');
       ship.id = `ship${i}`;
       ship.classList.add('clickable');
