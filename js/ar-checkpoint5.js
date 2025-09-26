@@ -37,7 +37,7 @@ function setupARScene() {
     const scene = document.querySelector('a-scene'); // Correctly attach to the scene
     const treasureChest = document.createElement('a-gltf-model');
     treasureChest.setAttribute('id', 'treasure-chest-model');
-    treasureChest.setAttribute('src', 'assets/treasure_chest.glb');
+    treasureChest.setAttribute('src', 'assets/open_chest.glb');
 
     treasureChest.setAttribute('position', '0 0 -11');
     treasureChest.setAttribute('scale', '0.07 0.04, 0.04');
