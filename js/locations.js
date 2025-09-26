@@ -11,4 +11,4 @@ export const CHECKPOINT_LOCATIONS = {
     5: { lat: 12.7516235 , lon: 80.1957938 }// Fountain
     // Future checkpoints will be added here
     // 3: { lat: 34.0522, lon: -118.2437 }, // Example: Los Angeles
-};, 
+};
