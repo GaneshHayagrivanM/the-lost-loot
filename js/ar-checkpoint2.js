@@ -163,42 +163,53 @@ function shake(entity) {
 
 function handleAnswerClick(selectedIndex) {
     if (!gameActive) return;
+    gameActive = false; // Prevent further clicks
+
+    // Disable all slates to prevent race conditions from rapid clicks
+    for (let i = 0; i < 3; i++) {
+        const s = document.getElementById(`answer-slate-${i}`);
+        if (s) s.classList.remove('clickable');
+    }
 
     const questionData = selectedQuestions[currentQuestionIndex];
     const selectedOption = questionData.options[selectedIndex];
     const correctOption = questionData.answer;
     const slate = document.getElementById(`answer-slate-${selectedIndex}`);
 
-    if (!slate) return; // Exit if slate not found
-
-    // Disable clicks during animation
-    slate.classList.remove('clickable');
+    if (!slate) { // Should not happen, but good practice
+        gameActive = true; // Re-enable game if something is wrong
+        return;
+    }
 
     enlarge(slate);
 
     if (selectedOption === correctOption) {
         console.log("Correct answer!");
-        // Prevent further clicks until the next question is displayed or the game ends.
-        gameActive = false;
-
+        // Wait for animation, then proceed
         setTimeout(() => {
             currentQuestionIndex++;
             if (currentQuestionIndex >= QUESTIONS_TO_WIN) {
-                winGame();
-                // gameActive is not reset here because the quiz is over.
+                winGame(); // Game ends, no need to re-enable clicks
             } else {
-                displayQuestion();
+                displayQuestion(); // This will make the next set of slates clickable
                 gameActive = true; // Re-enable clicks for the new question
             }
         }, 1000);
 
     } else {
         console.log("Wrong answer!");
+        // Wait for enlarge animation to finish, then shake
         setTimeout(() => {
             shake(slate);
-            // Re-enable click on this slate after animation
-            setTimeout(() => slate.classList.add('clickable'), 500);
-        }, 200); // Delay shake to occur after enlarge
+            // After shake animation, re-enable all slates for another try
+            setTimeout(() => {
+                for (let i = 0; i < 3; i++) {
+                    const s = document.getElementById(`answer-slate-${i}`);
+                    if (s) s.classList.add('clickable');
+                }
+                gameActive = true; // Re-enable clicks
+            }, 500);
+        }, 200);
     }
 }
 
