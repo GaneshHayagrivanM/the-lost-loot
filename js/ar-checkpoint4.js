@@ -120,13 +120,7 @@ function createGameScene() {
     collider.setAttribute("material", "opacity: 0; transparent: true");
 
     collider.addEventListener("click", (e) => {
-      if (e.type === 'touchstart') e.preventDefault();
       console.log(`Chest ${sym} tapped!`);
-      handleTap(sym, wrapper);
-    });
-    collider.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      console.log(`Chest ${sym} touched!`);
       handleTap(sym, wrapper);
     });
 
