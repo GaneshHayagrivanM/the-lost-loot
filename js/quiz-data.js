@@ -13,12 +13,12 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "SSN's founder, the great Dr. Shiv Nadar, also captained which other grand vessel in the Indian IT seas?",
-    "options": ["Infosys", "Wipro", "HCL Technologies"],
+    "options": ["HCL Technologies", "Wipro", "Infosys"],
     "answer": "HCL Technologies"
   },
   {
     "question": "How vast be the lands of the SSN campus, me hearty?",
-    "options": ["100 acres", "150 acres", "230 acres"],
+    "options": ["100 acres", "230 acres", "150 acres"],
     "answer": "230 acres"
   },
   {
@@ -28,12 +28,12 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "On which grand sea-lane, the 'Cyber Corridor o' Chennai', has the SSN vessel dropped its anchor?",
-    "options": ["East Coast Road", "Grand Southern Trunk Road", "Rajiv Gandhi Salai (OMR)"],
+    "options": ["Rajiv Gandhi Salai (OMR)", "Grand Southern Trunk Road", "East Coast Road"],
     "answer": "Rajiv Gandhi Salai (OMR)"
   },
   {
     "question": "What be the highest mark o' honor the NAAC has ever bestowed upon the SSN crew?",
-    "options": ["A", "A+", "A++"],
+    "options": ["A", "A++", "A+"],
     "answer": "A++"
   },
   {
@@ -48,7 +48,7 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "The SSN School o' Advanced Software Engineering joined forces with which legendary university from across the great waters o' the US?",
-    "options": ["Stanford University", "MIT", "Carnegie Mellon University"],
+    "options": ["Carnegie Mellon University", "MIT", "Stanford University"],
     "answer": "Carnegie Mellon University"
   },
   {
@@ -58,7 +58,7 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "What shiny treasure of a ratin' did the Indian Green Buildin' Council (IGBC) award SSN's green isle in April 2023?",
-    "options": ["Gold", "Silver", "Platinum"],
+    "options": ["Gold", "Platinum", "Silver"],
     "answer": "Platinum"
   },
   {
@@ -73,7 +73,7 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "Roughly how many pieces o' eight does SSN award in scholarships to its most worthy shipmates each year?",
-    "options": ["Over Rs. 1 Crore", "Over Rs. 2 Crores", "Over Rs. 4 Crores"],
+    "options": ["Over Rs. 4 Crores", "Over Rs. 2 Crores", "Over Rs. 1 Crore"],
     "answer": "Over Rs. 4 Crores"
   },
   {
@@ -88,7 +88,7 @@ export const QUIZ_QUESTIONS = [
   },
   {
     "question": "Which bank keeps a treasure chest, or an ATM as ye landlubbers call it, on the SSN campus?",
-    "options": ["Indian Bank", "State Bank of India", "Tamilnad Mercantile Bank (TMB)"],
+    "options": ["Tamilnad Mercantile Bank (TMB)", "State Bank of India", "Indian Bank"],
     "answer": "Tamilnad Mercantile Bank (TMB)"
   },
   {
