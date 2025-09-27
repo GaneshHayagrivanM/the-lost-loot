@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let ships = [];
   let activeCannonballs = [];
   const shipPositions = [
-    { x: -2, y: 0, z: -5 }, // Adjusted for markerless AR
-    { x: 2, y: 0, z: -6 },
-    { x: -1.5, y: 0, z: -4 }
+    { x: -4, y: 0, z: -7 }, // Adjusted for markerless AR
+    { x: 5, y: 0, z: -6 },
+    { x: -3.5, y: 0, z: -4 }
   ];
 
   const scene = document.querySelector('a-scene');
