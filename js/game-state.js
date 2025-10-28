@@ -58,6 +58,24 @@ async function finishCheckpoint(checkpointId) {
     }
     try {
         const updatedState = await apiService.completeCheckpoint(teamId, checkpointId);
+
+        // --- Client-side workaround ---
+        // The API is not correctly awarding keys. This manually adds the key
+        // to the local state if the completed checkpoint is a key-awarding one.
+        const KEY_AWARDING_CHECKPOINTS = [1, 3, 4];
+        if (KEY_AWARDING_CHECKPOINTS.includes(checkpointId)) {
+            // Ensure keysCollected is an array
+            if (!Array.isArray(updatedState.keysCollected)) {
+                updatedState.keysCollected = [];
+            }
+            // Add the key if it's not already present
+            if (!updatedState.keysCollected.includes(checkpointId)) {
+                updatedState.keysCollected.push(checkpointId);
+                console.log(`Client-side workaround: Awarded key ${checkpointId}.`);
+            }
+        }
+        // --- End workaround ---
+
         saveGameState(updatedState);
         return updatedState;
     } catch (error) {
